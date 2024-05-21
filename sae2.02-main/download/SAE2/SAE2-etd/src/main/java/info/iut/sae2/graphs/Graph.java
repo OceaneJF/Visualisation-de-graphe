@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import info.iut.sae2.viewer.GraphCanvas;
 
-public abstract class Graph implements IGraph{
+public class Graph implements IGraph{
 
     private ArrayList<Node> nodes;
     private ArrayList<Edge> edges;
@@ -14,6 +14,13 @@ public abstract class Graph implements IGraph{
         edges=new ArrayList<>();
     }
 
+/**
+ * Cette méthode crée et ajoute un nouveaux sommet à la liste des sommets du graph
+ */
+    public Node addNode(){
+        Node n= new Node();
+        return addNode(n);
+    }
 /**
  * Cette méthode permet de récuperer la liste de tous les sommets du graph
  */
@@ -123,6 +130,15 @@ public abstract class Graph implements IGraph{
     }
 
     /**
+     * Cette méthode permet de modifier la position de toutes les arretes 
+     */
+    public void setAllEdgesPositions(ArrayList<Coord> bends){
+        for(Edge e: edges) {
+            e.setBends(bends);
+        }
+    }
+
+    /**
      * Cette méthode permet de récuperer le sommet source de l'arrete passé en parametre 
      */
     public Node source(Edge e){
@@ -136,4 +152,89 @@ public abstract class Graph implements IGraph{
         return e.getTarget();
     }
 
+    /**
+     * Cette méthode permet de récuperer tous les voisins d'un sommet
+     */
+    public ArrayList<Node> getNeighbors(Node n){
+        ArrayList<Node> neighbors= new ArrayList<>();
+        for (Edge e : n.getEdges()) {
+            if (!e.getSource().equals(n)) {
+                neighbors.add(e.getSource());
+            }else{
+                neighbors.add(e.getTarget());
+            }
+        }
+        return neighbors;
+    }
+
+    /**
+     * Cette méthode permet de récuperer tous les successeurs d'un sommet
+     */
+    public ArrayList<Node> getSuccesors(Node n){
+        ArrayList<Node> succesors= new ArrayList<>();
+        for (Edge e : n.getEdges()) {
+            if (!e.getTarget().equals(n)) {
+                succesors.add(e.getTarget());
+            }
+        }
+        return succesors;
+    }
+
+    /**
+     * Cette méthode permet de récuperer tous les predecesseurs d'un sommet
+     */
+    public ArrayList<Node> getPredecessors(Node n){
+        ArrayList<Node> predecessors= new ArrayList<>();
+        for (Edge e : n.getEdges()) {
+            if (!e.getSource().equals(n)) {
+                predecessors.add(e.getSource());
+            }
+        }
+        return predecessors;
+    }
+
+    /**
+     * Cette méthode permet de récuperer toutes les arretes qui sont rattaché à un sommet
+     */
+    public ArrayList<Edge> getInOutEdges(Node n){
+        return new ArrayList<>(n.getEdges());
+    }
+
+    /**
+     * Cette méthode permet de récuperer toutes les arretes qui pointes vers le sommet passé en parametre
+     */
+    public ArrayList<Edge> getInEdges(Node n){
+        ArrayList<Edge> inEdges= new ArrayList<>();
+        for (Edge e : n.getEdges()) {
+            if (!e.getSource().equals(n)) {
+                inEdges.add(e);
+            }
+        }
+        return inEdges;
+    }
+
+    /**
+     * Cette méthode permet de récuperer toutes les arretes qui arrivent vers le sommet passé en parametre 
+     */
+    public ArrayList<Edge> getOutEdges(Node n){
+        ArrayList<Edge> outEdges= new ArrayList<>();
+        for (Edge e : n.getEdges()) {
+            if (!e.getTarget().equals(n)) {
+                outEdges.add(e);
+            }
+        }
+        return outEdges;
+    }
+
+    public int inDegree(Node n){
+        return getPredecessors(n).size();
+    }
+
+    public int outDegree(Node n){
+        return getSuccesors(n).size();
+    }
+
+    public int degree(Node n){
+        return getNeighbors(n).size();
+    }
 }

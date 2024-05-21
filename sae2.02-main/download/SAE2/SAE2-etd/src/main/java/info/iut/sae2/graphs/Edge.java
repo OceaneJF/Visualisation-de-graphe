@@ -2,7 +2,8 @@ package info.iut.sae2.graphs;
 
 import java.util.ArrayList;
 
-public class Edge extends Graph{
+public class Edge {
+
     /*
      * Le sommet source de l'arrete
      */
@@ -24,6 +25,8 @@ public class Edge extends Graph{
         bends=new ArrayList<>();
         bends.add(source.getPosition());
         bends.add(target.getPosition());
+        source.getEdges().add(this);
+        target.getEdges().add(this);
     }
 
     /**
