@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>SAE 2 - Visualisation de graphe</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/fontawesome.min.css" rel="stylesheet">
+        <link href="css/brands.min.css" rel="stylesheet">
+        <link href="css/solid.min.css" rel="stylesheet">
+        <link href="css/v4-font-face.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="css/style.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body class="homepage">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">SAE 2 - Visualisation de graphe</a>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#visualisation-de-graphe-et-construction-de-faisceaux-daretes" class="nav-link">Visualisation de graphe et construction de faisceaux d'arêtes</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#descriptif" class="nav-link">Descriptif</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#objectif-1-classes-modelisant-un-graphe" class="nav-link">Objectif 1 : Classes modélisant un graphe</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#objectif-2-algorithme-de-prim" class="nav-link">Objectif 2 : Algorithme de Prim</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#objectif-3-algorithme-de-construction-de-faisceaux-daretes" class="nav-link">Objectif 3 : Algorithme de construction de faisceaux d'arêtes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#modalites-et-livrables" class="nav-link">Modalités et Livrables</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="visualisation-de-graphe-et-construction-de-faisceaux-daretes">Visualisation de graphe et construction de faisceaux d'arêtes</h1>
+<p><center>
+    <figure>
+        <img src='./img/teaser_1.png'  alt='missing'  /><img src='./img/teaser_2.png' alt='missing' />
+        <figcaption>Graphe des migrations aux États-Unis avant et après construction de faisceaux d'arêtes. Ce graphe contient 1090 sommets (villes) et 5635 arêtes (flux migratoires). </figcaption>
+    </figure>
+</center>
+Le but de cette SAÉ est de construire une application de visualisation de graphe.</p>
+<p>La visualisation d'information est le sous-domaine de l'informatique qui consiste à définir et implémenter des représentations graphiques de données dans le but de permettre à une utilisatrice ou un utilisateur de les explorer efficacement. Ici les données d'intérêt seront modélisées par un graphe affiché sous la forme d'un diagramme nœud-lien. Dans ce type de diagramme, chaque nœud du graphe est représenté par une forme géométrique (p. ex., un cercle, un carré, etc.) et chaque arête par une ligne (ou courbe) reliant les formes géométriques correspondant à ses extrémités. Il s'agit en fait de la représentation que vous avez dû utiliser jusqu'à présent sans en connaître le nom. Bien qu'intuitive, cette technique de représentation souffre rapidement de "bruit visuel" induit par le nombre important de croisements d'arêtes (mais aussi par le nombre de pixels utilisés pour chaque arête, le nombre de pixels de l'écran étant borné).</p>
+<p>Afin d'améliorer la lisibilité de telles représentations, il existe deux solutions principales :</p>
+<ul>
+<li>affecter des coordonnées aux sommets afin de minimiser les croisements (et longueurs) d'arêtes et</li>
+<li>s'il n'est pas possible de déplacer les sommets (car leurs positions encodent une information), essayer de regrouper les arêtes en faisceaux afin de minimiser le nombre de pixels utilisés pour dessiner les arêtes mais aussi de mettre en évidence les flux principaux dans le réseau.</li>
+</ul>
+<p>Dans cette SAÉ, nous nous intéresserons à la deuxième approche, appelée <em>edge bundling</em>. </p>
+<p>Lors du projet, vous n'aurez pas à implémenter la partie gérant l'affichage de graphe puisqu'elle vous est fournie. Toutefois il vous faudra implémenter toute la partie permettant de manipuler des graphes et d'appliquer des algorithmes sur ceux-ci. Étant donné que la partie gérant l'affichage vous est fournie, votre code devra s'adapter à cet existant et s'exécuter correctement.</p>
+<p>Vous trouverez <a href="./download/SAE2.zip">ici</a> la version initiale du projet.</p>
+<h2 id="descriptif">Descriptif</h2>
+<p>Au cours ce projet, vous aurez trois objectifs principaux qui vous permettrons à terme d'afficher un graphe dont les arêtes auront été regroupées en faisceaux : </p>
+<ul>
+<li>implémenter une classe <tt>Graph</tt> respectant l'interface fournie, </li>
+<li>implémenter l'algorithme <em>Prim</em> permettant d'extraire un arbre couvrant de poids minimal et</li>
+<li>implémenter l'algorithme d'<em>edge bundling</em>.</li>
+</ul>
+<h2 id="objectif-1-classes-modelisant-un-graphe">Objectif 1 : Classes modélisant un graphe</h2>
+<p>Dans un premier temps, il vous est demandé d'implémenter l'interface <tt>IGraph</tt> fournie, à l'exception des méthodes <tt>getMinimumSpanningTree</tt> et <tt>bundle</tt> qui seront implémentées au cours des objectifs suivants. Pour permettre l'exécution de votre code, ces dernières méthodes doivent être implémentés <em>a minima</em> (sans code).</p>
+<p>Pour la compilation du code et son exécution correcte, il faut également ajouter d'autres classes avec leur implémentation dans le paquet <tt>graph</tt> :</p>
+<ul>
+<li>une classe permettant de gérer des coordonnées bidimensionnelles réelles (classe <tt>Coord</tt>): cette classe est fournie, reste à compléter une méthode calculant la distance (euclidienne) entre deux paires de coordonnées,</li>
+<li>une classe permettant de gérer des sommets (classe <tt>Node</tt>), à créer,</li>
+<li>une classe permettant de gérer des arêtes (classe <tt>Edge</tt>), à créer.</li>
+</ul>
+<p>Afin d'identifier les méthodes nécessaires (mais pas forcément suffisantes), commencez par vous référer à l'implémentation des classes <tt>GraphViewer</tt> et <tt>GraphCanvas</tt> qui les utilisent.</p>
+<p>Enfin, la classe <tt>GraphViewer</tt> fait aussi référence à une classe <tt>GraphLoader</tt>, fournie partiellement. Vous devrez implémenter cette classe et en particulier la méthode <tt>loadFromFile(String filename)</tt> afin d'afficher un graphe chargé depuis un fichier (de nombreux fichiers d'exemples, ainsi que 4 fichiers décrivant 4 graphes réels sont fournis dans le projet). Cette classe est fournie et à compléter pour une de ses méthodes.</p>
+<p>Afin d'améliorer la qualité de votre projet, il vous est demandé d'implémenter les tests unitaires de ces classes. C'est aussi l'occasion de mettre en œuvre les bonnes pratiques qui vous ont été présentées depuis le début de l'année (TU, documentation, gestion de version de code, etc.).</p>
+<h2 id="objectif-2-algorithme-de-prim">Objectif 2 : Algorithme de Prim</h2>
+<p>Le deuxième objectif correspond à l'implémentation de l'algorithme de Prim, vu en cours, permettant d'extraire d'un graphe arête-valué un arbre couvrant de poids minimal. Dans ce projet, nous considérerons que le poids des arêtes est la distance (dans le plan) qui sépare ses deux sommets extrémités. </p>
+<p>Ainsi l'arbre couvrant que vous allez extraire devrait "approximer" les distances des chemins dans un tel graphe.</p>
+<h2 id="objectif-3-algorithme-de-construction-de-faisceaux-daretes">Objectif 3 : Algorithme de construction de faisceaux d'arêtes</h2>
+<p>Le principe de l'algorithme d'<em>edge bundling</em> que nous vous demandons d'implémenter consiste à construire une ligne brisée (polyligne) en calculant une séquence de coordonnées par lesquelles passeront chaque arête. L'idée est ici d'utiliser l'arbre couvrant de poids minimal comme "guide" pour router les arêtes du graphe.</p>
+<p><center>
+    <figure>
+        <img src='./img/edge_bends.png' alt='missing' style="width:250px;height:auto;"/>
+        <figcaption>Illustration de brisure sur une arête. Ici, l'arête possède 3 brisures : C1, C2 
+et C3. Vous pouvez noter que les coordonnées des somets src et tgt ne font pas partie de la séquence.</figcaption>
+    </figure>
+</center></p>
+<p>L'idée est ici d'utiliser l'arbre couvrant de poids minimal comme "guide" pour router les arêtes   du graphe. Etant donnés une arête du graphe et l'arbre de poids minimal, l'algorithme consiste à :</p>
+<ul>
+<li>calculer le plus court chemin dans l'arbre entre les 2 extrémités de l'arête et</li>
+<li>à utiliser la séquence de coordonnées des sommets de ce plus court chemin comme brisures de l'arête</li>
+</ul>
+<p><center>
+    <figure>
+        <img src='./img/edge_routing_1.png'  alt='missing' style="width:250px;height:auto;" />    <img src='./img/edge_routing_2.png' alt='missing'  style="width:250px;height:auto;"/><img src='./img/edge_routing_3.png' alt='missing' style="width:250px;height:auto;"/>
+        <figcaption>Illustration de l'algorimthe d'<em>edge bundling</em>. Étant donnés un arbre couvrant (arêtes grises) et une arête du graphe original (en bleu), l'arête est routée sur le plus court chemin dans l'arbre puis rendue en utilisant une courbe de Bézier.</figcaption>
+    </figure>
+</center></p>
+<p>Ainsi des arêtes similaires devraient suivre des chemins similaires et donc être regroupées en faisceau.</p>
+<p>Une fois la méthode <tt>bundle()</tt> de la classe <tt>Graph</tt> implémentée, vous devriez pouvoir afficher son résultat dans l'application.</p>
+<p>Les <tt>bends</tt> (brisures) d'une arête font référence aux points intermédiaires et n'incluent donc pas ses extrémités.</p>
+<h2 id="modalites-et-livrables">Modalités et Livrables</h2>
+<p>Cette SAÉ se déroule obligatoirement en équipe de deux ou seul. Aucune communication entre les équipes concernant le code ou les algorithmes ne sera tolérée. Les équipes seront constituées et peuvent être imposées lors de la première séance encadrée.</p>
+<p>Cette SAÉ comprend deux séances encadrées pour la ressource R2.01, deux séances encadrées pour la ressource R2.07, une séance encadrée pour la ressource R2.09, quatre séances en autonomie prévues dans l'emploi du temps, soit un total de 18 heures de TD plus travail personnel.</p>
+<p>Vous aurez deux livrables à nous fournir à la fin de votre projet : un rapport écrit ainsi que le code source de votre projet (sous la forme d'un projet Netbeans zippé).</p>
+<p>Ces livrables sont à rendre au plus tard le lundi 3 juin à 18:00 (tolérance de rendu : 19:00) sur Moodle : (dans ce cours)[https://moodle.u-bordeaux.fr/course/view.php?id=14460]. Clés d'inscription : S2x, où x est votre groupe (A, B, C ou D).</p>
+<p>Cette SAÉ fait intervenir des compétences issues de plusieurs ressources : R2.01 Développement Orienté Objet, R2.07 Graphes et R2.09 Méthodes Numériques. Vos enseignants de ces ressources évalueront donc des aspects différents de votre projet.</p>
+<h3 id="rapport">Rapport</h3>
+<p>Ce rapport au format PDF, écrit en Français avec titre, sommaire, partie "développement objet", partie "tests des algorithmes de graphes" et partie "complexité des algorithmes de graphes", sera évalué par toutes les ressources. Le texte doit être lisible (11 pt ou plus), avec pages numérotées et figures légendées, et inclure le nom des auteurs sur la page de titre et dans le nom du fichier.</p>
+<h4 id="developpement-objet">Développement objet</h4>
+<p>Cette partie devra inclure un diagramme de classes UML détaillé des paquets <tt>graph</tt> et <tt>viewer</tt> du code fourni, qui est incomplet, et un second du code une fois terminé, avec le contenu du paquet <tt>algorithms</tt> (ainsi que de tout autre élément que vous aurez ajouté). Ces deux diagrammes doivent être détaillés, avec le type des données et les visibilités. La signature des méthodes peut être omise. Si nécessaire, ces diagrammes peuvent être séparés par paquet. Le diagramme final peut également ne pas détailler le contenu des classes non modifiées par rapport au code d'origine, s'il y en a. De plus, cette partie devra décrire, en Français, les motivations et la méthodologie utilisée pour arriver au résultat final.</p>
+<h4 id="tests-des-algorithmes-de-graphe">Tests des algorithmes de graphe</h4>
+<p>Décrivez, dans cette partie, les tests de chacun de vos algorithmes sous la forme :
+  <ul>
+  <li> situation initiale (avec illustration si nécessaire),</li>
+  <li> résultat attendu de l'algorithme,</li>
+  <li> résultat obtenu.</li></ul></p>
+<p>Pour les besoins de ces tests, vous pouvez créer vos propres graphes en respectant le format des fichiers déjà fournis.</p>
+<p>Indiquez s'il s'agit de tests unitaires (qui doivent être présents et validés dans le code) ou de tests fonctionnels (qui peuvent être reproduits avec votre programme). Pour les fonctionnalités non réalisées, le test devrait être décrit sans le résultat obtenu.</p>
+<h4 id="complexite-des-algorithmes-de-graphe">Complexité des algorithmes de graphe</h4>
+<p>Pour chacun des algorithmes de graphe réalisés, indiquez la complexité correspondant à votre implémentation et à votre structure de données, en fonction du nombre de sommets et d'arêtes du graphe de départ, en explicitant votre raisonnement.</p>
+<h4 id="code">Code</h4>
+<p>Le code devra être remis sous la forme d'un projet Netbeans exporté au format .zip, comportant le nom des auteurs dans le nom du projet comme dans le nom du fichier. Veillez à indiquer le nom des auteurs dans le titre des fenêtres du projet. Le code fourni devra compiler, être exécutable, et se conformer aux attendus en termes de fonctionnalités et bonnes pratiques. Vous êtes en droit de modifier le code fourni si vous estimez que ces pratiques ne sont pas suivies.</p>
+<h3 id="r201-developpement-oriente-objet">R2.01 Développement orienté objet</h3>
+<p>En ce qui concerne la ressource R2.01, seront évalués le rapport décrivant vos choix de conception et d'implémentation. La qualité générale de votre code (bonnes pratiques, visibilités raisonnables, découpage, tests unitaires, etc.) pourra aussi entrer en ligne de compte. Les enseignants de cette ressource seront particulièrement attentif à la qualité de la conception que vous proposerez.</p>
+<p>La note de développement objets sera coefficient 6. De plus, la note du dernier devoir surveillé de la ressource R2.01 sera reportée avec un coefficient de 2.</p>
+<h3 id="r207-graphes">R2.07 Graphes</h3>
+<p>En ce qui concerne la ressource R2.07, seront évalués les algorithmes de Prim et de regroupement en faisceaux d'arêtes. Attention à bien implémenter les algorithmes attendus. Des tests unitaires des algorithmes, détaillant la situation de tests et les résultats escomptés et obtenus, sont attendus. La maîtrise de la complexité des algorithmes sera appréciée.</p>
+<p>La note de graphes sera coefficient 6. De plus, la note du dernier devoir surveillé de la ressource R2.07 sera reportée avec un coefficient de 2.</p>
+<h3 id="r209-methodes-numeriques">R2.09 Méthodes numériques</h3>
+<p>En ce qui concerne la ressource R2.09, seront évaluées les complexités des méthodes de la classe <tt>Graph</tt>. Il vous est demandé ici de calculer les complexités de chacune des méthodes de cette class et de les présenter dans une partie spécifique de votre rapport.</p>
+<p>La note de méthodes numériques sera coefficient 3. De plus, la note du dernier devoir surveillé de la ressource R2.09 sera reportée avec un coefficient de 1.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+                <p>IUT de Bordeaux</p>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js"></script>
+        <script src="search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.6.0
+Build Date UTC : 2024-05-17 13:44:52.406687+00:00
+-->
