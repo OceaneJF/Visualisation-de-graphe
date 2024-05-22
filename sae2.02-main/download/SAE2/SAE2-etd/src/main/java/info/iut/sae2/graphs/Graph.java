@@ -280,4 +280,48 @@ public class Graph implements IGraph{
         }
         return null;
     }
+
+    public ArrayList<Coord> getBoundingBox(){
+        ArrayList<Double> coordsX = new ArrayList<Double>();
+        ArrayList<Double> coordsY = new ArrayList<Double>();
+        for (Node n : nodes) {
+            coordsX.add(n.getPosition().getX());
+            coordsY.add(n.getPosition().getY());
+        }
+        double xMin = min(coordsX);
+        double xMax = max(coordsX);
+        double yMin = min(coordsY);
+        double yMax = max(coordsY);
+        ArrayList<Coord> rect = new ArrayList<Coord>();
+        rect.add(new Coord(xMin, yMin));
+        rect.add(new Coord(xMax, yMax));
+        return rect;
+    }
+
+    private double min(ArrayList<Double> coords){
+        double min = coords.get(0);
+        for (int i = 1; i < coords.size(); i++) {
+            if(coords.get(i)< min){
+                min = coords.get(i);
+            }
+        }
+        return min;
+    }
+
+    private double max(ArrayList<Double> coords){
+        double max = coords.get(0);
+        for (int i = 1; i < coords.size(); i++) {
+            if(coords.get(i)< max){
+                max = coords.get(i);
+            }
+        }
+        return max;
+    }
+
+    public Graph getMinimumSpanningTree(){
+        return null;
+    }
+
+    public void bundle(){
+    }
 }
