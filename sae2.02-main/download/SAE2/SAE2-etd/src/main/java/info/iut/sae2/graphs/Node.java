@@ -9,7 +9,7 @@ public class Node {
     /**
      * Le graph dans lequel se trouve le sommet
      */
-    private Graph graph;
+    //private Graph graph;
     
     /**
      * Les coordonnées du points 
@@ -34,10 +34,10 @@ public class Node {
         edges=new HashSet<>();
     }
 
-    public Node(Coord position,int num,Graph graph){
+    public Node(Coord position,int num){
         this.position=position;
         this.num=num;
-        this.graph=graph;
+        //this.graph=graph;
         edges=new HashSet<>();
     }
 

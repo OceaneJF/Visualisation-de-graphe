@@ -1,6 +1,7 @@
 package info.iut.sae2.graphs;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import info.iut.sae2.viewer.GraphCanvas;
 
@@ -236,5 +237,47 @@ public class Graph implements IGraph{
 
     public int degree(Node n){
         return getNeighbors(n).size();
+    }
+
+    public boolean existEdge(Node src, Node tgt, boolean oriented){
+
+        if (oriented) {
+        ArrayList<Edge> srcOutEdges= getOutEdges(src);
+        for (Edge e : srcOutEdges) {
+            if (e.getTarget().equals(tgt)) {
+                return true;
+            } 
+        }
+        }else{
+            ArrayList<Edge> srcEdges = getInOutEdges(src);
+            for (Edge e: srcEdges) {
+                if(e.getTarget().equals(tgt) || e.getSource().equals(tgt)){
+                    return true;
+                } 
+            }
+        }
+
+        return false;
+    }
+
+    public Edge getEdge(Node src, Node tgt, boolean oriented){
+        if (existEdge(src, tgt, oriented)) {
+            if (oriented) {
+                ArrayList<Edge> srcOutEdges= getOutEdges(src);
+                for (Edge e : srcOutEdges) {
+                    if (e.getTarget().equals(tgt)) {
+                        return e;
+                    } 
+                }
+                }else{
+                    ArrayList<Edge> srcEdges = getInOutEdges(src);
+                    for (Edge e: srcEdges) {
+                        if(e.getTarget().equals(tgt) || e.getSource().equals(tgt)){
+                            return e;
+                        } 
+                    }
+                }
+        }
+        return null;
     }
 }
