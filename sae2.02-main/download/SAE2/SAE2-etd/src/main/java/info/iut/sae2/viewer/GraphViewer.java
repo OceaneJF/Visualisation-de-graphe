@@ -62,8 +62,8 @@ public class GraphViewer extends JFrame {
         c.insets = new Insets(0, 20, 0, 0);
         contentPane.add(filenameLabel, c);
 
-        String filenames[] = {"Hollywood", "US Migration", "UBC CS website",
-            "Air traffic 2000", "Example", "Test CJ", "Test EB", "Test EBB"};
+        String filenames[] = { "Hollywood", "US Migration", "UBC CS website",
+                "Air traffic 2000", "Example", "Test CJ", "Test EB", "Test EBB" };
         JComboBox fileChooser = new JComboBox(filenames);
         fileChooser.setSelectedIndex(-1);
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -148,7 +148,8 @@ public class GraphViewer extends JFrame {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 String item = (String) e.getItem();
                 loadGraph(item);
-                infos.setText(String.format("%d Nodes and %d Edges", currentGraph.numberOfNodes(), currentGraph.numberOfEdges()));
+                infos.setText(String.format("%d Nodes and %d Edges", currentGraph.numberOfNodes(),
+                        currentGraph.numberOfEdges()));
             }
         });
 

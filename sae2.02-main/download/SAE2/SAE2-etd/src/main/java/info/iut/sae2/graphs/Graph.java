@@ -377,7 +377,7 @@ public class Graph implements IGraph {
     private double max(ArrayList<Double> coords) {
         double max = coords.get(0);
         for (int i = 1; i < coords.size(); i++) {
-            if (coords.get(i) < max) {
+            if (coords.get(i) > max) {
                 max = coords.get(i);
             }
         }

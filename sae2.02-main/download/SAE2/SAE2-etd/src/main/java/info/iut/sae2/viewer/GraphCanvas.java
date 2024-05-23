@@ -182,7 +182,6 @@ public class GraphCanvas extends Canvas {
 
         int width = getWidth() - 2 * MARGIN;
         int height = getHeight() - 2 * MARGIN;
-
         // scale so as to maximize the drawing
         double distX, distY;
         double ratio = max(bbWidth / width, bbHeight / height);

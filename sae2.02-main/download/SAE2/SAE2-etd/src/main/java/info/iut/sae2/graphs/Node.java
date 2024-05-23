@@ -79,4 +79,12 @@ public class Node {
         return true;
     }
 
+    public void setNum(int num) {
+        this.num = num;
+    }
+
+    public void setEdges(HashSet<Edge> edges) {
+        this.edges = edges;
+    }
+
 }
