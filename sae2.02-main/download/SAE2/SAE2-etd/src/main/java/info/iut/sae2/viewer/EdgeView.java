@@ -18,40 +18,45 @@ import java.util.Arrays;
  */
 public class EdgeView {
 
-    
     /**
-    No javadoc is provided, there is no need to understand/modify this part of the code 
+     * No javadoc is provided, there is no need to understand/modify this part of
+     * the code
      */
     int[] polyX;
-    
+
     /**
-    No javadoc is provided, there is no need to understand/modify this part of the code 
+     * No javadoc is provided, there is no need to understand/modify this part of
+     * the code
      */
     int[] polyY;
-    
+
     /**
-    No javadoc is provided, there is no need to understand/modify this part of the code 
+     * No javadoc is provided, there is no need to understand/modify this part of
+     * the code
      */
     int[] smoothedX;
-    
+
     /**
-    No javadoc is provided, there is no need to understand/modify this part of the code 
+     * No javadoc is provided, there is no need to understand/modify this part of
+     * the code
      */
     int[] smoothedY;
 
-    
     /**
-    No javadoc is provided, there is no need to understand/modify this part of the code 
+     * No javadoc is provided, there is no need to understand/modify this part of
+     * the code
      */
     boolean smoothed;
-    
+
     /**
-    No javadoc is provided, there is no need to understand/modify this part of the code 
+     * No javadoc is provided, there is no need to understand/modify this part of
+     * the code
      */
     Color color;
 
     /**
-    No javadoc is provided, there is no need to understand/modify this part of the code 
+     * No javadoc is provided, there is no need to understand/modify this part of
+     * the code
      */
     EdgeView(int[] x, int[] y, Color color, boolean smoothed) {
         this.polyX = Arrays.copyOf(x, x.length);
@@ -60,9 +65,10 @@ public class EdgeView {
         this.smoothed = smoothed;
         this.smoothPolyline();
     }
-    
+
     /**
-    No javadoc is provided, there is no need to understand/modify this part of the code 
+     * No javadoc is provided, there is no need to understand/modify this part of
+     * the code
      */
     private Coord bezierCurve(double t) {
         if (t == 0.) {
@@ -76,17 +82,20 @@ public class EdgeView {
         double t2 = 1.0;
         Coord bezierPoint = new Coord();
         for (int i = 0; i < this.polyX.length; ++i) {
-            bezierPoint.x += this.polyX[i] * curCoeff * t2 * pow(s, (double) this.polyX.length - 1 - i);
-            bezierPoint.y += this.polyY[i] * curCoeff * t2 * pow(s, (double) this.polyY.length - 1 - i);
+            bezierPoint.setX(
+                    bezierPoint.getX() + this.polyX[i] * curCoeff * t2 * pow(s, (double) this.polyX.length - 1 - i));
+            bezierPoint.setY(
+                    bezierPoint.getY() + this.polyY[i] * curCoeff * t2 * pow(s, (double) this.polyY.length - 1 - i));
             double c = (double) (i + 1);
             curCoeff *= (r - c) / c;
             t2 *= t;
         }
         return bezierPoint;
     }
-    
+
     /**
-    No javadoc is provided, there is no need to understand/modify this part of the code 
+     * No javadoc is provided, there is no need to understand/modify this part of
+     * the code
      */
     private void smoothPolyline() {
         ArrayList<Coord> newBends = new ArrayList<>();
@@ -104,14 +113,14 @@ public class EdgeView {
         this.smoothedY = new int[newBends.size()];
 
         for (int i = 0; i < this.smoothedX.length; ++i) {
-            this.smoothedX[i] = (int) newBends.get(i).x;
-            this.smoothedY[i] = (int) newBends.get(i).y;
+            this.smoothedX[i] = (int) newBends.get(i).getX();
+            this.smoothedY[i] = (int) newBends.get(i).getY();
         }
     }
 
-    
     /**
-    No javadoc is provided, there is no need to understand/modify this part of the code 
+     * No javadoc is provided, there is no need to understand/modify this part of
+     * the code
      */
     void draw(Graphics2D img) {
         int[] curX;
@@ -127,26 +136,30 @@ public class EdgeView {
         img.drawPolyline(curX, curY, curX.length);
 
     }
-    
+
     /**
-    No javadoc is provided, there is no need to understand/modify this part of the code 
+     * No javadoc is provided, there is no need to understand/modify this part of
+     * the code
      */
     void updatePosition(int[] x, int[] y) {
         this.polyX = Arrays.copyOf(x, x.length);
         this.polyY = Arrays.copyOf(y, y.length);
         this.smoothPolyline();
     }
- 
+
     /**
-    No javadoc is provided, there is no need to understand/modify this part of the code 
+     * No javadoc is provided, there is no need to understand/modify this part of
+     * the code
      */
-    void updateTransparency(int transparency){
+    void updateTransparency(int transparency) {
         this.color = new Color(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), transparency);
     }
-        
+
     /**
-    No javadoc is provided, there is no need to understand/modify this part of the code 
-     */void updateSmoothed(boolean smoothed){
+     * No javadoc is provided, there is no need to understand/modify this part of
+     * the code
+     */
+    void updateSmoothed(boolean smoothed) {
         this.smoothed = smoothed;
     }
 }
