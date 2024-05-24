@@ -385,7 +385,59 @@ public class Graph implements IGraph {
     }
 
     public Graph getMinimumSpanningTree() {
+        // boolean[] S = new boolean[numberOfNodes()];
+        // int[] ACM = new int[numberOfNodes()];
+        // int U= nodes.get(0).getNum();
+        // for (int i = 0; i < numberOfNodes()-1; i++) {
+        //     S[i]=false;
+        // }
+        // S[U]=true;
+        // int nbAretes = 0;
+        // ACM[U]=U;
+        // while (nbAretes<(numberOfNodes()-1)) {
+            
+        // }
+
+
+        ArrayList<Edge> ACM = new ArrayList<>();
+        ArrayList<Node> S = new ArrayList<>();
+        Node U= nodes.get(0);
+        S.add(U);
+        Node v =new Node();
+        Node w =new Node();
+        int n =numberOfNodes();
+        Node[] noeudArrete;
+        for (int i = 0; i < n-1; i++) {
+            noeudArrete=ChoisirArete(n, S, v,w);
+            
+        }
+        
         return null;
+    }
+
+    private Node[] ChoisirArete(int n,ArrayList<Node> S,Node v, Node w ){
+        double coutMin=-100000.;
+        for (Edge e : edges) {
+            Node src=e.getSource();
+            Node tgt =e.getTarget();
+            ArrayList<Coord> eBends= getEdgePosition(e);
+            double dist=eBends.get(0).dist(eBends.get(1));
+            if (S.contains(src) && !S.contains(tgt)) {
+                if ( dist< coutMin) {
+                    coutMin=dist;
+                    v= src;
+                    w=tgt;
+                }
+            }else if(!S.contains(src) && S.contains(tgt)){
+                if ( dist< coutMin) {
+                    coutMin=dist;
+                    v= tgt;
+                    w=src;
+                }
+            }
+        }
+        Node[] noeudArrete= {v,w};
+        return noeudArrete ;
     }
 
     public void bundle() {
