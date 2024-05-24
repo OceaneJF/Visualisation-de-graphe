@@ -15,6 +15,11 @@ public class Graph implements IGraph {
         edges = new ArrayList<>();
     }
 
+    public Graph(ArrayList<Node> nodes, ArrayList<Edge> edges) {
+        this.nodes = new ArrayList<>(nodes);
+        this.edges = new ArrayList<>(edges);
+    }
+
     /**
      * Cette méthode crée et ajoute un nouveaux sommet à la liste des sommets du
      * graph
@@ -385,7 +390,65 @@ public class Graph implements IGraph {
     }
 
     public Graph getMinimumSpanningTree() {
-        return null;
+        ArrayList<Edge> ACM = new ArrayList<>();
+        ArrayList<Node> S = new ArrayList<>();
+        ArrayList<Edge> neighbors = new ArrayList<>();
+        ArrayList<Edge> neighborsWithoutVisited;
+        Edge edgeMin = null;
+        Node U = nodes.get(0);
+        S.add(U);
+        while (S.size() < nodes.size()) {
+            for (Node node : S) {
+                neighbors.addAll(node.getEdges());
+            }
+            neighborsWithoutVisited = removeVisitedNeighbors(neighbors, S);
+            edgeMin = chooseEdge(neighborsWithoutVisited);
+            ACM.add(edgeMin);
+            S.add(notVisitedNode(edgeMin, S));
+            neighbors.clear();
+
+        }
+        Graph graph = new Graph(S, ACM);
+        return graph;
+    }
+
+    private ArrayList<Edge> removeVisitedNeighbors(ArrayList<Edge> neighbors, ArrayList<Node> S) {
+        ArrayList<Edge> newNeighbors = new ArrayList<>(neighbors);
+        for (Edge e : neighbors) {
+            if (S.contains(e.getSource()) && S.contains(e.getTarget())) {
+                newNeighbors.remove(e);
+            }
+        }
+        return newNeighbors;
+    }
+
+    private Edge chooseEdge(ArrayList<Edge> edges) {
+        Edge edgeMin = edges.get(0);
+        Coord srcCoord = edges.get(0).getSource().getPosition();
+        Coord tgtCoord = edges.get(0).getTarget().getPosition();
+        double min = srcCoord.dist(tgtCoord);
+        double dist;
+        for (int i = 1; i < edges.size(); i++) {
+            srcCoord = edges.get(i).getSource().getPosition();
+            tgtCoord = edges.get(i).getTarget().getPosition();
+            dist = srcCoord.dist(tgtCoord);
+            if (dist < min) {
+                min = dist;
+                edgeMin = edges.get(i);
+            }
+        }
+        return edgeMin;
+
+    }
+
+    private Node notVisitedNode(Edge edge, ArrayList<Node> S) {
+        Node src = edge.getSource();
+        Node tgt = edge.getTarget();
+        if (S.contains(src)) {
+            return tgt;
+        } else {
+            return src;
+        }
     }
 
     public void bundle() {
