@@ -87,4 +87,8 @@ public class Node {
         this.edges = edges;
     }
 
+    public void addEdge(Edge e) {
+        this.edges.add(e);
+    }
+
 }

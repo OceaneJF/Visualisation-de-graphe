@@ -15,6 +15,11 @@ public class Graph implements IGraph {
         edges = new ArrayList<>();
     }
 
+    public Graph(ArrayList<Node> nodes, ArrayList<Edge> edges) {
+        this.nodes = new ArrayList<>(nodes);
+        this.edges = new ArrayList<>(edges);
+    }
+
     /**
      * Cette méthode crée et ajoute un nouveaux sommet à la liste des sommets du
      * graph
@@ -385,59 +390,65 @@ public class Graph implements IGraph {
     }
 
     public Graph getMinimumSpanningTree() {
-        // boolean[] S = new boolean[numberOfNodes()];
-        // int[] ACM = new int[numberOfNodes()];
-        // int U= nodes.get(0).getNum();
-        // for (int i = 0; i < numberOfNodes()-1; i++) {
-        //     S[i]=false;
-        // }
-        // S[U]=true;
-        // int nbAretes = 0;
-        // ACM[U]=U;
-        // while (nbAretes<(numberOfNodes()-1)) {
-            
-        // }
-
-
         ArrayList<Edge> ACM = new ArrayList<>();
         ArrayList<Node> S = new ArrayList<>();
-        Node U= nodes.get(0);
+        ArrayList<Edge> neighbors = new ArrayList<>();
+        ArrayList<Edge> neighborsWithoutVisited;
+        Edge edgeMin = null;
+        Node U = nodes.get(0);
         S.add(U);
-        Node v =new Node();
-        Node w =new Node();
-        int n =numberOfNodes();
-        Node[] noeudArrete;
-        for (int i = 0; i < n-1; i++) {
-            noeudArrete=ChoisirArete(n, S, v,w);
-            
+        while (S.size() < nodes.size()) {
+            for (Node node : S) {
+                neighbors.addAll(node.getEdges());
+            }
+            neighborsWithoutVisited = removeVisitedNeighbors(neighbors, S);
+            edgeMin = chooseEdge(neighborsWithoutVisited);
+            ACM.add(edgeMin);
+            S.add(notVisitedNode(edgeMin, S));
+            neighbors.clear();
+
         }
-        
-        return null;
+        Graph graph = new Graph(S, ACM);
+        return graph;
     }
 
-    private Node[] ChoisirArete(int n,ArrayList<Node> S,Node v, Node w ){
-        double coutMin=-100000.;
-        for (Edge e : edges) {
-            Node src=e.getSource();
-            Node tgt =e.getTarget();
-            ArrayList<Coord> eBends= getEdgePosition(e);
-            double dist=eBends.get(0).dist(eBends.get(1));
-            if (S.contains(src) && !S.contains(tgt)) {
-                if ( dist< coutMin) {
-                    coutMin=dist;
-                    v= src;
-                    w=tgt;
-                }
-            }else if(!S.contains(src) && S.contains(tgt)){
-                if ( dist< coutMin) {
-                    coutMin=dist;
-                    v= tgt;
-                    w=src;
-                }
+    private ArrayList<Edge> removeVisitedNeighbors(ArrayList<Edge> neighbors, ArrayList<Node> S) {
+        ArrayList<Edge> newNeighbors = new ArrayList<>(neighbors);
+        for (Edge e : neighbors) {
+            if (S.contains(e.getSource()) && S.contains(e.getTarget())) {
+                newNeighbors.remove(e);
             }
         }
-        Node[] noeudArrete= {v,w};
-        return noeudArrete ;
+        return newNeighbors;
+    }
+
+    private Edge chooseEdge(ArrayList<Edge> edges) {
+        Edge edgeMin = edges.get(0);
+        Coord srcCoord = edges.get(0).getSource().getPosition();
+        Coord tgtCoord = edges.get(0).getTarget().getPosition();
+        double min = srcCoord.dist(tgtCoord);
+        double dist;
+        for (int i = 1; i < edges.size(); i++) {
+            srcCoord = edges.get(i).getSource().getPosition();
+            tgtCoord = edges.get(i).getTarget().getPosition();
+            dist = srcCoord.dist(tgtCoord);
+            if (dist < min) {
+                min = dist;
+                edgeMin = edges.get(i);
+            }
+        }
+        return edgeMin;
+
+    }
+
+    private Node notVisitedNode(Edge edge, ArrayList<Node> S) {
+        Node src = edge.getSource();
+        Node tgt = edge.getTarget();
+        if (S.contains(src)) {
+            return tgt;
+        } else {
+            return src;
+        }
     }
 
     public void bundle() {

@@ -74,7 +74,11 @@ public class GraphLoader {
                 }
                 int src = Integer.parseInt(attributes[0]);
                 int tgt = Integer.parseInt(attributes[1]);
-                Edge e = new Edge(nodeMap.get(src), nodeMap.get(tgt));
+                Node srcNode = nodeMap.get(src);
+                Node tgtNode = nodeMap.get(tgt);
+                Edge e = new Edge(srcNode, tgtNode);
+                srcNode.addEdge(e);
+                tgtNode.addEdge(e);
                 g.addEdge(e);
                 line = br.readLine();
             }
