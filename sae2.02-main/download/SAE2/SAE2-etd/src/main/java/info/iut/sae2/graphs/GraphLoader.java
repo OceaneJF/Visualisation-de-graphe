@@ -24,7 +24,7 @@ public class GraphLoader {
     }
 
     private static HashMap<Integer, Node> loadNodesFromFile(Graph g, String nodeFileName) {
-        Path pathToFile = Paths.get(nodeFileName);
+        Path pathToFile = Paths.get("sae2.02-main/download/SAE2/SAE2-etd/" + nodeFileName);
         HashMap<Integer, Node> nodeMap = new HashMap<>();
 
         try (BufferedReader br = Files.newBufferedReader(pathToFile,
@@ -47,6 +47,7 @@ public class GraphLoader {
                 double y = Double.parseDouble(coords[1]);
 
                 Node n = g.addNode();
+                n.setNum(id);
                 g.setNodePosition(n, new Coord(x, y));
                 nodeMap.put(id, n);
                 line = br.readLine();
@@ -59,5 +60,31 @@ public class GraphLoader {
     }
 
     private static void loadEdgesFromFile(Graph g, HashMap<Integer, Node> nodeMap, String edgeFileName) {
-	// TODO
+        Path pathToFile = Paths.get("sae2.02-main/download/SAE2/SAE2-etd/" + edgeFileName);
+
+        try (BufferedReader br = Files.newBufferedReader(pathToFile,
+                StandardCharsets.US_ASCII)) {
+
+            String line = br.readLine();
+            while (line != null) {
+                String[] attributes = line.split(";");
+                if (attributes.length != 2) {
+                    System.err.println("Error while loading nodes : " + attributes.length + " column(s)");
+                    continue;
+                }
+                int src = Integer.parseInt(attributes[0]);
+                int tgt = Integer.parseInt(attributes[1]);
+                Node srcNode = nodeMap.get(src);
+                Node tgtNode = nodeMap.get(tgt);
+                Edge e = new Edge(srcNode, tgtNode);
+                srcNode.addEdge(e);
+                tgtNode.addEdge(e);
+                g.addEdge(e);
+                line = br.readLine();
+            }
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
 }

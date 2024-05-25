@@ -9,15 +9,15 @@ public class Node {
     /**
      * Le graph dans lequel se trouve le sommet
      */
-    //private Graph graph;
-    
+    // private Graph graph;
+
     /**
-     * Les coordonnées du points 
+     * Les coordonnées du points
      */
     private Coord position;
 
     /**
-     * Le numéro du sommet 
+     * Le numéro du sommet
      */
     private int num;
     /**
@@ -25,51 +25,44 @@ public class Node {
      */
     private HashSet<Edge> edges;
 
-
     public HashSet<Edge> getEdges() {
         return edges;
     }
 
     public Node() {
-        edges=new HashSet<>();
+        edges = new HashSet<>();
     }
 
-    public Node(Coord position,int num){
-        this.position=position;
-        this.num=num;
-        //this.graph=graph;
-        edges=new HashSet<>();
+    public Node(Coord position, int num) {
+        this.position = position;
+        this.num = num;
+        // this.graph=graph;
+        edges = new HashSet<>();
     }
 
     /**
      * Récuperer les coordonnées d'un sommet
+     * 
      * @return
      */
-    public Coord getPosition(){
+    public Coord getPosition() {
         return position;
     }
 
     /**
-     * Cette méthode permet de modifier les coordonnées d'un sommet 
+     * Cette méthode permet de modifier les coordonnées d'un sommet
+     * 
      * @param coord
      */
-    public void setPosition(Coord coord){
-        this.position=coord;
+    public void setPosition(Coord coord) {
+        this.position = coord;
     }
 
     /**
-     * Méthode permettant de récuperer le numéro du sommet 
+     * Méthode permettant de récuperer le numéro du sommet
      */
-    public int getNum(){
+    public int getNum() {
         return num;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + num;
-        return result;
     }
 
     @Override
@@ -86,6 +79,16 @@ public class Node {
         return true;
     }
 
-    
+    public void setNum(int num) {
+        this.num = num;
+    }
+
+    public void setEdges(HashSet<Edge> edges) {
+        this.edges = edges;
+    }
+
+    public void addEdge(Edge e) {
+        this.edges.add(e);
+    }
 
 }
