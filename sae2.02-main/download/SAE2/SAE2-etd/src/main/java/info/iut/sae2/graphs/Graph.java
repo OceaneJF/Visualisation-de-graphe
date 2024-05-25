@@ -112,11 +112,16 @@ public class Graph implements IGraph {
      * Cette méthode permet de récuperer les coordonnées d'une arrete
      */
     public ArrayList<Coord> getEdgePosition(Edge e) {
-        return e.getBends();
+        Node src = e.getSource();
+        Node tgt = e.getTarget();
+        ArrayList<Coord> positions = new ArrayList<>();
+        positions.add(src.getPosition());
+        positions.add(tgt.getPosition());
+        return positions;
     }
 
     /*
-     * Cette méthode permet de modifier les coordonées d'une arrete
+     * Cette méthode permet de modifier les coordonées des brisures d'une arrete
      */
     public void setEdgePosition(Edge e, ArrayList<Coord> bends) {
         e.setBends(bends);
@@ -140,7 +145,8 @@ public class Graph implements IGraph {
     }
 
     /**
-     * Cette méthode permet de modifier la position de toutes les arretes
+     * Cette méthode permet de modifier la position des brisures de toutes les
+     * arretes
      */
     public void setAllEdgesPositions(ArrayList<Coord> bends) {
         for (Edge e : edges) {
