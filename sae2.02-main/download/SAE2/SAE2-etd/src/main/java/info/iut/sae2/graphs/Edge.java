@@ -10,49 +10,58 @@ public class Edge {
     private Node source;
 
     /*
-     * Le sommet destination de l'arrete 
+     * Le sommet destination de l'arrete
      */
     private Node target;
 
-/*
- * Les coordonées du sommets source et du sommet destination d'une arrete 
- */
+    /*
+     * Les coordonées des brisures de l'arrete
+     */
     private ArrayList<Coord> bends;
 
-    public Edge(Node source, Node target){
-        this.source=source;
-        this.target=target;
-        bends=new ArrayList<>();
-        bends.add(source.getPosition());
-        bends.add(target.getPosition());
+    public Edge(Node source, Node target) {
+        this.source = source;
+        this.target = target;
+        bends = new ArrayList<>();
         source.getEdges().add(this);
         target.getEdges().add(this);
     }
 
     /**
-     * Cette méthode permet de récuperer le sommet source de l'arrete 
-     * @return
+     * Cette méthode permet de récuperer le sommet source de l'arrete
+     * 
+     * @return le sommet source de l'arrete
      */
-    public Node getSource(){
+    public Node getSource() {
         return source;
     }
 
     /**
-     * Cette méthode permet de récuperer le sommet destination de l'arrete 
-     * @return
+     * Cette méthode permet de récuperer le sommet destination de l'arrete
+     * 
+     * @return le sommet destination de l'arrete
      */
-    public Node getTarget(){
+    public Node getTarget() {
         return target;
     }
-    /*
-     * Cette méthode permet de récuperer les coordonées du sommets source et du sommet destination de l'arrete 
+
+    /**
+     * 
+     * Cette méthode permet de récuperer les coordonées des brisures de l'arrete
+     * 
+     * @return les coordonées des brisures de l'arrete
      */
-    public ArrayList<Coord> getBends(){
+    public ArrayList<Coord> getBends() {
         return bends;
     }
 
-    public void setBends(ArrayList<Coord> positions){
-        bends= new ArrayList<>(positions);
+    /**
+     * Cette méthode permet de modifier les coordonnées des brisures de l'arrete
+     * 
+     * @param les nouvelles coordonnées des brisures de l'arrete
+     */
+    public void setBends(ArrayList<Coord> positions) {
+        bends = new ArrayList<>(positions);
 
     }
 
