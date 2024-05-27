@@ -18,10 +18,6 @@ public class Graph implements IGraph {
      */
     private ArrayList<Edge> edges;
 
-    public void setEdges(ArrayList<Edge> edges) {
-        this.edges = edges;
-    }
-
     public Graph() {
         nodes = new ArrayList<>();
         edges = new ArrayList<>();
@@ -136,7 +132,12 @@ public class Graph implements IGraph {
      */
     @Override
     public ArrayList<Coord> getEdgePosition(Edge e) {
-        return e.getBends();
+        Node src = e.getSource();
+        Node tgt = e.getTarget();
+        ArrayList<Coord> positions = new ArrayList<>();
+        positions.add(src.getPosition());
+        positions.add(tgt.getPosition());
+        return positions;
     }
 
     /*
@@ -532,23 +533,18 @@ public class Graph implements IGraph {
         Graph ACM = getMinimumSpanningTree();
         // La liste des sommets du chemin
         ArrayList<Node> path;
-        // On crée le graphe simplifié
-        Graph simpleGraph = simpleGraph();
         // Pour chaque arrete du graphe
-        for (Edge edge : simpleGraph.getEdges()) {
+        for (Edge edge : edges) {
             // Si cette arrete n'est pas dans l'arbre couvrant minimum
             System.out.println("test");
-            if (!ACM.getEdges().contains(edge)) {
+            if (!ACM.existEdge(edge.getSource(), edge.getTarget(), false)) {
                 System.out.println("y'a pas edge dans ACM");
                 // On cherche les brisures de cette arrete
                 path = findBends(ACM, edge.getSource(), edge.getTarget());
-                
                 if (path != null) {
                     // On retire le sommet source et le sommet destination de la listes des brisures
-                    System.out.println("Size of path : "+path.size()+ " node1 "+ path.get(0).getNum()+ " node2 "+ path.get(1).getNum());
                     path.remove(edge.getSource());
                     path.remove(edge.getTarget());
-                    System.out.println("Size of path : "+path.size());
                     // On les met dans bends
 
                     ArrayList<Coord> newBends = new ArrayList<>();
@@ -561,15 +557,12 @@ public class Graph implements IGraph {
 
                     }
                     System.out.println("fin bends");
-                    simpleGraph.setEdgePosition(edge, newBends);
+                    this.setEdgePosition(edge, newBends);
+
                 }
 
             }
-            else{
-                System.out.println("IL EST PAS PASSE !!!");
-            }
         }
-        this.setEdges(simpleGraph.getEdges());
     }
 
     private ArrayList<Node> findBends(Graph ACM, Node src, Node tgt) {
@@ -584,7 +577,6 @@ public class Graph implements IGraph {
             // on retourne les sommets du chemin parcouru
             return path;
         }
-        System.out.println("Path est null, on n'a pas trouvé le sommet target :(");
         return null;
     }
 
@@ -616,22 +608,4 @@ public class Graph implements IGraph {
         path.remove(src);
         return false;
     }
-
-    /**
-     * Permet de construire un graphe dont les arrêtes ne sont pas en double.
-     * @return un graphe simplifié
-     */
-    private Graph simpleGraph(){
-        ArrayList<Edge> edgesSimple = new ArrayList<Edge>();
-        for (Edge e : this.edges) {
-            if(!edgesSimple.contains(e)){
-                edgesSimple.add(e);
-                System.out.println("Source : " +e.getSource().getNum());
-                System.out.println("Target : "+ e.getTarget().getNum());
-            }
-        }
-        
-        return new Graph(nodes, edgesSimple);
-    }
-
 }
