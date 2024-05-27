@@ -69,7 +69,7 @@ public class GraphLoader {
             while (line != null) {
                 String[] attributes = line.split(";");
                 if (attributes.length != 2) {
-                    System.err.println("Error while loading nodes : " + attributes.length + " column(s)");
+                    System.err.println("Error while loading edges : " + attributes.length + " column(s)");
                     continue;
                 }
                 int src = Integer.parseInt(attributes[0]);
