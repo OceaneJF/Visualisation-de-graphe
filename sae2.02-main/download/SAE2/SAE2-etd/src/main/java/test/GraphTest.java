@@ -143,6 +143,7 @@ public class GraphTest {
         ArrayList<Node> expected= new ArrayList<>();
         expected.add(node3);
         expected.add(node2);
+        System.out.println("SDQSDQSDSDQSQSDSDQSDQSDQSDQSDQSDQSDQSDDSQDQSDQSDQSDSDSQDSQD");
         assertArrayEquals(expected.toArray(), actual.toArray());
 
     }

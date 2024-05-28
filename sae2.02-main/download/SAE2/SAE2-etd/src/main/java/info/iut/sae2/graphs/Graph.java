@@ -451,7 +451,7 @@ public class Graph implements IGraph {
         // Toutes les arretes voisines des sommets visités
         ArrayList<Edge> neighbors = new ArrayList<>();
         // Les arretes voisines des sommets visités sans les arretes deja visités
-        ArrayList<Edge> neighborsWithoutVisited;
+        ArrayList<Edge> neighborsWithoutVisited =null;
         // Initialisation
         Edge edgeMin = null;
         Node U = nodes.get(0);
@@ -477,6 +477,17 @@ public class Graph implements IGraph {
             // On éfface le contenu de neighbors
             neighbors.clear();
 
+        }
+        //On enleve de la liste des arretes voisines de chaque sommet les arrete qui ne sont pas présente dans l'ACM
+        for (Node acmNode : S) {
+            System.out.println(acmNode.getNum() +" num node");
+            HashSet<Edge> cleanEdges = new HashSet<>();
+            for (Edge e : acmNode.getEdges()) {
+                if (ACM.contains(e)) {
+                    cleanEdges.add(edgeMin);
+                }
+            }
+            acmNode.setEdges(cleanEdges);
         }
         // On créer l'ACM et on le retourne
         Graph graph = new Graph(S, ACM);
@@ -572,20 +583,20 @@ public class Graph implements IGraph {
                 System.out.println("y'a pas edge dans ACM");
                 // On cherche les brisures de cette arrete
                 path = findBends(ACM, edge.getSource(), edge.getTarget());
-                System.out.println("path size :" + path.size());
+                // System.out.println("path size :" + path.size());
                 if (path != null && path.size()>2) {
                     // On retire le sommet source et le sommet destination de la listes des brisures
-                    System.out.println("Size of path : "+path.size()+ " node1 "+ path.get(0).getNum()+ " node2 "+ path.get(1).getNum());
+                    // System.out.println("Size of path : "+path.size()+ " node1 "+ path.get(0).getNum()+ " node2 "+ path.get(1).getNum());
                     path.remove(edge.getSource());
                     path.remove(edge.getTarget());
-                    System.out.println("Size of path : "+path.size());
+                    // System.out.println("Size of path : "+path.size());
                     // On les met dans bends
                         ArrayList<Coord> newBends = new ArrayList<>();
                     for (Node node : path) {
-                        System.out.println(node.getNum() + " bends");
-                        System.out.println(edge.getSource().getNum() + " src edge");
-                        System.out.println(edge.getTarget().getNum() + " tgt edge");
-                        System.out.println(" ");
+                        // System.out.println(node.getNum() + " bends");
+                        // System.out.println(edge.getSource().getNum() + " src edge");
+                        // System.out.println(edge.getTarget().getNum() + " tgt edge");
+                        // System.out.println(" ");
                         newBends.add(node.getPosition());
 
                     }
@@ -618,7 +629,7 @@ this.setEdges(simpleGraph.getEdges());
             // on retourne les sommets du chemin parcouru
             return path;
         }
-System.out.println("Path est null, on n'a pas trouvé le sommet target :(");
+        System.out.println("Path est null, on n'a pas trouvé le sommet target :(");
         return null;
     }
 
@@ -663,20 +674,20 @@ System.out.println("Path est null, on n'a pas trouvé le sommet target :(");
             if(!edgesSimple.contains(e)){
                 edgesSimple.add(e);
                 System.out.println("ajouté");
-                System.out.println("Source : " +e.getSource().getNum());
-                System.out.println("Target : "+ e.getTarget().getNum());
+                // System.out.println("Source : " +e.getSource().getNum());
+                // System.out.println("Target : "+ e.getTarget().getNum());
             }else{
                 System.out.println("enlevé");
-                System.out.println("Source : " +e.getSource().getNum());
-                System.out.println("Target : "+ e.getTarget().getNum());
+                // System.out.println("Source : " +e.getSource().getNum());
+                // System.out.println("Target : "+ e.getTarget().getNum());
             }
         }
         Edge caca = edgesSimple.get(0);
-        System.out.println("Voisin du sommet "+ caca.getSource().getNum());
+        // System.out.println("Voisin du sommet "+ caca.getSource().getNum());
         for (Edge ed : caca.getSource().getEdges()) {
            
-                System.out.println("Source : " +ed.getSource().getNum());
-                System.out.println("Target : "+ ed.getTarget().getNum());
+                // System.out.println("Source : " +ed.getSource().getNum());
+                // System.out.println("Target : "+ ed.getTarget().getNum());
                 System.out.println(" ");
         }
         return new Graph(nodes, edgesSimple);
