@@ -211,6 +211,20 @@ public class Graph implements IGraph {
         return neighbors;
     }
 
+    public ArrayList<Node> getNeighbors(Node n,Graph g) {
+        ArrayList<Node> neighbors = new ArrayList<>();
+        //A completer pour prendre les voisins du sommet du graph ACM 
+        for (Edge e : n.getEdges()) {
+            if (!e.getSource().equals(n)) {
+                neighbors.add(e.getSource());
+            } else {
+                neighbors.add(e.getTarget());
+            }
+        }
+        return neighbors;
+    }
+
+
     /**
      * Cette méthode permet de récuperer tous les successeurs d'un sommet
      */
@@ -530,6 +544,11 @@ public class Graph implements IGraph {
     public void bundle() {
         // L'arbre couvrant de cout minimum du graph
         Graph ACM = getMinimumSpanningTree();
+        for (Edge edge : ACM.getEdges()) {
+            System.out.println("Arrete");
+            System.out.println(edge.getSource().getNum() + " src edge");
+            System.out.println(edge.getTarget().getNum() + " tgt edge");
+        }
         // La liste des sommets du chemin
         ArrayList<Node> path;
 // On crée le graphe simplifié
@@ -542,16 +561,15 @@ public class Graph implements IGraph {
                 System.out.println("y'a pas edge dans ACM");
                 // On cherche les brisures de cette arrete
                 path = findBends(ACM, edge.getSource(), edge.getTarget());
-
-                if (path != null) {
+                System.out.println("path size :" + path.size());
+                if (path != null && path.size()>2) {
                     // On retire le sommet source et le sommet destination de la listes des brisures
-System.out.println("Size of path : "+path.size()+ " node1 "+ path.get(0).getNum()+ " node2 "+ path.get(1).getNum());
+                    System.out.println("Size of path : "+path.size()+ " node1 "+ path.get(0).getNum()+ " node2 "+ path.get(1).getNum());
                     path.remove(edge.getSource());
                     path.remove(edge.getTarget());
-System.out.println("Size of path : "+path.size());
+                    System.out.println("Size of path : "+path.size());
                     // On les met dans bends
-
-                    ArrayList<Coord> newBends = new ArrayList<>();
+                        ArrayList<Coord> newBends = new ArrayList<>();
                     for (Node node : path) {
                         System.out.println(node.getNum() + " bends");
                         System.out.println(edge.getSource().getNum() + " src edge");
@@ -562,11 +580,13 @@ System.out.println("Size of path : "+path.size());
                     }
                     System.out.println("fin bends");
                     simpleGraph.setEdgePosition(edge, newBends);
+                    
+                    
                 }
 
 }
             else{
-                System.out.println("IL EST PAS PASSE !!!");
+                System.out.println("il est pas passé");
             }
         }
 this.setEdges(simpleGraph.getEdges());
@@ -574,7 +594,10 @@ this.setEdges(simpleGraph.getEdges());
 
     private ArrayList<Node> findBends(Graph ACM, Node src, Node tgt) {
         // On créer une liste des sommets qui ont été visités
-        ArrayList<Node> visited = new ArrayList<>();
+        HashMap<Integer,Boolean> visited =new HashMap<>();
+        for (Node n : ACM.getNodes()) {
+            visited.put(n.getNum(),false);
+        }
         // On créer une liste des sommets par lequelles ont passe pour aller du sommet
         // source au sommet destination
         ArrayList<Node> path = new ArrayList<>();
@@ -588,11 +611,11 @@ System.out.println("Path est null, on n'a pas trouvé le sommet target :(");
         return null;
     }
 
-    private boolean DFS(Graph ACM, Node src, Node tgt, ArrayList<Node> path, ArrayList<Node> visited) {
+    private boolean DFS(Graph ACM, Node src, Node tgt, ArrayList<Node> path, HashMap<Integer,Boolean> visited) {
         // On ajoute le sommet dans le chemin
         path.add(src);
         // On ajoute le sommet dans la liste des sommets visités
-        visited.add(src);
+        visited.put(src.getNum(), true);
         // Si le sommet que l'on est entrain de visiter est la destination alors on
         // retourne true
         if (src.equals(tgt)) {
@@ -602,7 +625,7 @@ System.out.println("Path est null, on n'a pas trouvé le sommet target :(");
         // Pour chaque sommet voisin du sommet passé en parametre
         for (Node n : ACM.getNeighbors(src)) {
             // Si il a pas déja été visité
-            if (!visited.contains(n)) {
+            if (!visited.get(n.getNum())) {
                 // et qu'il s'agit de la destination, on retourne true
                 if (DFS(ACM, n, tgt, path, visited)) {
                     return true;
@@ -614,6 +637,7 @@ System.out.println("Path est null, on n'a pas trouvé le sommet target :(");
         // ne s'agit pas de la destination on remonte en arriere et on l'enleve de la
         // liste des sommet du chemin et on retourne false
         path.remove(src);
+        System.out.println("YA UN REMOVE!!!");
         return false;
     }
 
@@ -626,6 +650,11 @@ System.out.println("Path est null, on n'a pas trouvé le sommet target :(");
         for (Edge e : this.edges) {
             if(!edgesSimple.contains(e)){
                 edgesSimple.add(e);
+                System.out.println("ajouté");
+                System.out.println("Source : " +e.getSource().getNum());
+                System.out.println("Target : "+ e.getTarget().getNum());
+            }else{
+                System.out.println("enlevé");
                 System.out.println("Source : " +e.getSource().getNum());
                 System.out.println("Target : "+ e.getTarget().getNum());
             }
