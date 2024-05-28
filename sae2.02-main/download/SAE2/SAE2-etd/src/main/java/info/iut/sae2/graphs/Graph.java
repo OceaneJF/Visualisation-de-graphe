@@ -208,19 +208,30 @@ public class Graph implements IGraph {
                 neighbors.add(e.getTarget());
             }
         }
+
+        for (Node nd : neighbors) {
+            System.out.println("num voisin : "+nd.getNum());
+        }
+        
         return neighbors;
     }
 
     public ArrayList<Node> getNeighbors(Node n,Graph g) {
         ArrayList<Node> neighbors = new ArrayList<>();
+        Node nodeGraph=null;
         //A completer pour prendre les voisins du sommet du graph ACM 
-        for (Edge e : n.getEdges()) {
-            if (!e.getSource().equals(n)) {
+        for (Node node:g.getNodes()) {
+            if (node.equals(n)) {
+                nodeGraph=node;
+            }
+        }
+        for (Edge e : nodeGraph.getEdges()) {
+            if (!e.getSource().equals(nodeGraph)) {
                 neighbors.add(e.getSource());
             } else {
                 neighbors.add(e.getTarget());
             }
-        }
+        }       
         return neighbors;
     }
 
@@ -624,6 +635,7 @@ System.out.println("Path est null, on n'a pas trouvé le sommet target :(");
 
         // Pour chaque sommet voisin du sommet passé en parametre
         for (Node n : ACM.getNeighbors(src)) {
+            System.out.println("j'ai appelé getNeighbors");
             // Si il a pas déja été visité
             if (!visited.get(n.getNum())) {
                 // et qu'il s'agit de la destination, on retourne true
@@ -659,7 +671,14 @@ System.out.println("Path est null, on n'a pas trouvé le sommet target :(");
                 System.out.println("Target : "+ e.getTarget().getNum());
             }
         }
-        
+        Edge caca = edgesSimple.get(0);
+        System.out.println("Voisin du sommet "+ caca.getSource().getNum());
+        for (Edge ed : caca.getSource().getEdges()) {
+           
+                System.out.println("Source : " +ed.getSource().getNum());
+                System.out.println("Target : "+ ed.getTarget().getNum());
+                System.out.println(" ");
+        }
         return new Graph(nodes, edgesSimple);
     }
 
