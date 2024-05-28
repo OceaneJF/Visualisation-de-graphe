@@ -210,19 +210,19 @@ public class Graph implements IGraph {
         }
 
         for (Node nd : neighbors) {
-            System.out.println("num voisin : "+nd.getNum());
+            System.out.println("num voisin : " + nd.getNum());
         }
-        
+
         return neighbors;
     }
 
-    public ArrayList<Node> getNeighbors(Node n,Graph g) {
+    public ArrayList<Node> getNeighbors(Node n, Graph g) {
         ArrayList<Node> neighbors = new ArrayList<>();
-        Node nodeGraph=null;
-        //A completer pour prendre les voisins du sommet du graph ACM 
-        for (Node node:g.getNodes()) {
+        Node nodeGraph = null;
+        // A completer pour prendre les voisins du sommet du graph ACM
+        for (Node node : g.getNodes()) {
             if (node.equals(n)) {
-                nodeGraph=node;
+                nodeGraph = node;
             }
         }
         for (Edge e : nodeGraph.getEdges()) {
@@ -231,10 +231,9 @@ public class Graph implements IGraph {
             } else {
                 neighbors.add(e.getTarget());
             }
-        }       
+        }
         return neighbors;
     }
-
 
     /**
      * Cette méthode permet de récuperer tous les successeurs d'un sommet
@@ -438,72 +437,114 @@ public class Graph implements IGraph {
         return max;
     }
 
-    /**
-     * Cette méthode retourne un arbre couvrant de cout minimum en utilisant
-     * l'algorithm de Prim
-     */
+    // /**
+    // * Cette méthode retourne un arbre couvrant de cout minimum en utilisant
+    // * l'algorithm de Prim
+    // */
+    // @Override
+    // public Graph getMinimumSpanningTree() {
+    // // Les arretes de l'ACM
+    // ArrayList<Edge> ACM = new ArrayList<>();
+    // // Les sommets de l'ACM
+    // ArrayList<Node> S = new ArrayList<>();
+    // // Toutes les arretes voisines des sommets visités
+    // ArrayList<Edge> neighbors = new ArrayList<>();
+    // // Les arretes voisines des sommets visités sans les arretes deja visités
+    // ArrayList<Edge> neighborsWithoutVisited = null;
+    // // Initialisation
+    // Edge edgeMin = null;
+    // Node U = nodes.get(0);
+    // S.add(U);
+    // // Tant qu'on a pas parcouru tous les sommets
+    // while (S.size() < nodes.size()) {
+    // // Pour chaque sommet qu'on a deja parcouru on récupere tous ses voisins et
+    // on
+    // // les mets dans neighbors
+    // for (Node node : S) {
+    // neighbors.addAll(node.getEdges());
+    // }
+    // // On supprime les arretes voisines deja visités et on les mets dans
+    // // neighborsWithoutVisited
+    // neighborsWithoutVisited = removeVisitedNeighbors(neighbors, S);
+    // // On récupere l'arrete qui a le cout le plus faibles parmis les arretes
+    // // voisines non visités et on la met dans edgeMin
+
+    // if (neighborsWithoutVisited.isEmpty()) {
+    // throw new IllegalStateException("No unvisited neighboring edges found.");
+    // }
+    // edgeMin = chooseEdge(neighborsWithoutVisited);
+    // // On ajoute cette arrete dans l'ACM
+    // ACM.add(edgeMin);
+    // // On ajoute le sommet de l'arrete qui n'a pas déja été visité et on l'ajoute
+    // // dans la liste des sommets visités
+    // S.add(notVisitedNode(edgeMin, S));
+    // // On éfface le contenu de neighbors
+    // neighbors.clear();
+
+    // }
+    // // On enleve de la liste des arretes voisines de chaque sommet les arrete qui
+    // ne
+    // // sont pas présente dans l'ACM
+    // for (Node acmNode : S) {
+    // System.out.println(acmNode.getNum() + " num node");
+    // HashSet<Edge> cleanEdges = new HashSet<>();
+    // for (Edge e : acmNode.getEdges()) {
+    // if (ACM.contains(e)) {
+    // cleanEdges.add(edgeMin);
+    // }
+    // }
+    // acmNode.setEdges(cleanEdges);
+    // }
+    // // On créer l'ACM et on le retourne
+    // Graph graph = new Graph(S, ACM);
+    // return graph;
+    // }
+
     @Override
     public Graph getMinimumSpanningTree() {
         // Les arretes de l'ACM
         ArrayList<Edge> ACM = new ArrayList<>();
-        // Les sommets de l'ACM
         ArrayList<Node> S = new ArrayList<>();
-        // Toutes les arretes voisines des sommets visités
         ArrayList<Edge> neighbors = new ArrayList<>();
-        // Les arretes voisines des sommets visités sans les arretes deja visités
-        ArrayList<Edge> neighborsWithoutVisited =null;
-        // Initialisation
-        Edge edgeMin = null;
-        Node U = nodes.get(0);
-        S.add(U);
-        // Tant qu'on a pas parcouru tous les sommets
-        while (S.size() < nodes.size()) {
-            // Pour chaque sommet qu'on a deja parcouru on récupere tous ses voisins et on
-            // les mets dans neighbors
-            for (Node node : S) {
-                neighbors.addAll(node.getEdges());
-            }
-            // On supprime les arretes voisines deja visités et on les mets dans
-            // neighborsWithoutVisited
-            neighborsWithoutVisited = removeVisitedNeighbors(neighbors, S);
-            // On récupere l'arrete qui a le cout le plus faibles parmis les arretes
-            // voisines non visités et on la met dans edgeMin
-            edgeMin = chooseEdge(neighborsWithoutVisited);
-            // On ajoute cette arrete dans l'ACM
-            ACM.add(edgeMin);
-            // On ajoute le sommet de l'arrete qui n'a pas déja été visité et on l'ajoute
-            // dans la liste des sommets visités
-            S.add(notVisitedNode(edgeMin, S));
-            // On éfface le contenu de neighbors
-            neighbors.clear();
 
-        }
-        //On enleve de la liste des arretes voisines de chaque sommet les arrete qui ne sont pas présente dans l'ACM
-        for (Node acmNode : S) {
-            System.out.println(acmNode.getNum() +" num node");
-            HashSet<Edge> cleanEdges = new HashSet<>();
-            for (Edge e : acmNode.getEdges()) {
-                if (ACM.contains(e)) {
-                    cleanEdges.add(edgeMin);
+        ArrayList<Node> nodesCp = new ArrayList<>(nodes);
+
+        Node U = nodesCp.get(0);
+        S.add(U);
+
+        while (S.size() < nodes.size()) {
+            for (Node node : S) {
+                for (Edge e : node.getEdges()) {
+                    if (!(S.contains(e.getSource()) && S.contains(e.getTarget()))) {
+                        neighbors.add(e);
+                    }
                 }
             }
-            acmNode.setEdges(cleanEdges);
+
+            Edge edgeMin = chooseEdge(neighbors);
+            ACM.add(edgeMin);
+            neighbors.clear();
+
+            Node nextNode = !S.contains(edgeMin.getSource()) ? edgeMin.getSource() : edgeMin.getTarget();
+            S.add(nextNode);
         }
-        // On créer l'ACM et on le retourne
-        Graph graph = new Graph(S, ACM);
-        return graph;
+
+        Graph mstGraph = new Graph(S, ACM);
+        return mstGraph;
     }
 
     /**
      * Cette méthode retourne toutes les arretes voisines des sommets visités sauf
      * les arretes deja visités
-     * 
+     *
      * @param neighbors toutes les arretes voisines des sommets visités
      * @param S         l'ensemble des sommets visités
-     * @return toutes les arretes voisines des sommets visités sauf les arretes deja
+     * @return toutes les arretes voisines des sommets visités sauf les arretes
+     *         deja
      *         visités
      */
-    private ArrayList<Edge> removeVisitedNeighbors(ArrayList<Edge> neighbors, ArrayList<Node> S) {
+    private ArrayList<Edge> removeVisitedNeighbors(ArrayList<Edge> neighbors,
+            ArrayList<Node> S) {
         ArrayList<Edge> newNeighbors = new ArrayList<>(neighbors);
         // Si le sommet source et destination de l'arrete sont contenu dans la liste des
         // sommets deja visité alors on retire cette arrete de neighbors
@@ -518,7 +559,7 @@ public class Graph implements IGraph {
     /**
      * Cette méthode retourne l'arrete qui a le cout le plus petit parmis la liste
      * d'arretes passé en parametre
-     * 
+     *
      * @param edges la listes des arretes
      * @return l'arrete qui a le cout le plus petit
      */
@@ -546,7 +587,7 @@ public class Graph implements IGraph {
 
     /**
      * Cette méthode retourne l'extrémité de l'arrete qui n'est pas deja visité
-     * 
+     *
      * @param edge l'arrete dont on veut connaitre l'extrémité qui n'est pas deja
      *             visité
      * @param S    la liste des sommets deja visité
@@ -564,6 +605,11 @@ public class Graph implements IGraph {
 
     @Override
     public void bundle() {
+        // La liste des sommets du chemin
+        ArrayList<Node> path;
+        // On crée le graphe simplifié
+        Graph simpleGraph = simpleGraph();
+
         // L'arbre couvrant de cout minimum du graph
         Graph ACM = getMinimumSpanningTree();
         for (Edge edge : ACM.getEdges()) {
@@ -571,10 +617,18 @@ public class Graph implements IGraph {
             System.out.println(edge.getSource().getNum() + " src edge");
             System.out.println(edge.getTarget().getNum() + " tgt edge");
         }
-        // La liste des sommets du chemin
-        ArrayList<Node> path;
-// On crée le graphe simplifié
-        Graph simpleGraph = simpleGraph();
+
+        for (Edge edge : simpleGraph.getEdges()) {
+            for (Node node : ACM.nodes) {
+                if (node.getEdges().contains(edge) && !ACM.edges.contains(edge)) {
+                    node.getEdges().remove(edge);
+                }
+            }
+        }
+
+        // Node nacm = ACM.nodes.get(0);
+        // getNeighbors(nacm);
+
         // Pour chaque arrete du graphe
         for (Edge edge : simpleGraph.getEdges()) {
             // Si cette arrete n'est pas dans l'arbre couvrant minimum
@@ -583,42 +637,41 @@ public class Graph implements IGraph {
                 System.out.println("y'a pas edge dans ACM");
                 // On cherche les brisures de cette arrete
                 path = findBends(ACM, edge.getSource(), edge.getTarget());
-                // System.out.println("path size :" + path.size());
-                if (path != null && path.size()>2) {
+                System.out.println("path size :" + path.size());
+                if (path != null && path.size() > 2) {
                     // On retire le sommet source et le sommet destination de la listes des brisures
-                    // System.out.println("Size of path : "+path.size()+ " node1 "+ path.get(0).getNum()+ " node2 "+ path.get(1).getNum());
+                    System.out.println("Size of path : " + path.size() + " node1 " +
+                            path.get(0).getNum() + " node2 " + path.get(1).getNum());
                     path.remove(edge.getSource());
                     path.remove(edge.getTarget());
-                    // System.out.println("Size of path : "+path.size());
+                    System.out.println("Size of path : " + path.size());
                     // On les met dans bends
-                        ArrayList<Coord> newBends = new ArrayList<>();
+                    ArrayList<Coord> newBends = new ArrayList<>();
                     for (Node node : path) {
-                        // System.out.println(node.getNum() + " bends");
-                        // System.out.println(edge.getSource().getNum() + " src edge");
-                        // System.out.println(edge.getTarget().getNum() + " tgt edge");
-                        // System.out.println(" ");
+                        System.out.println(node.getNum() + " bends");
+                        System.out.println(edge.getSource().getNum() + " src edge");
+                        System.out.println(edge.getTarget().getNum() + " tgt edge");
+                        System.out.println(" ");
                         newBends.add(node.getPosition());
 
                     }
                     System.out.println("fin bends");
                     simpleGraph.setEdgePosition(edge, newBends);
-                    
-                    
+
                 }
 
-}
-            else{
+            } else {
                 System.out.println("il est pas passé");
             }
         }
-this.setEdges(simpleGraph.getEdges());
+        this.setEdges(simpleGraph.getEdges());
     }
 
     private ArrayList<Node> findBends(Graph ACM, Node src, Node tgt) {
         // On créer une liste des sommets qui ont été visités
-        HashMap<Integer,Boolean> visited =new HashMap<>();
+        HashMap<Integer, Boolean> visited = new HashMap<>();
         for (Node n : ACM.getNodes()) {
-            visited.put(n.getNum(),false);
+            visited.put(n.getNum(), false);
         }
         // On créer une liste des sommets par lequelles ont passe pour aller du sommet
         // source au sommet destination
@@ -633,7 +686,8 @@ this.setEdges(simpleGraph.getEdges());
         return null;
     }
 
-    private boolean DFS(Graph ACM, Node src, Node tgt, ArrayList<Node> path, HashMap<Integer,Boolean> visited) {
+    private boolean DFS(Graph ACM, Node src, Node tgt, ArrayList<Node> path,
+            HashMap<Integer, Boolean> visited) {
         // On ajoute le sommet dans le chemin
         path.add(src);
         // On ajoute le sommet dans la liste des sommets visités
@@ -666,29 +720,29 @@ this.setEdges(simpleGraph.getEdges());
 
     /**
      * Permet de construire un graphe dont les arrêtes ne sont pas en double.
+     *
      * @return un graphe simplifié
      */
-    private Graph simpleGraph(){
+    private Graph simpleGraph() {
         ArrayList<Edge> edgesSimple = new ArrayList<Edge>();
         for (Edge e : this.edges) {
-            if(!edgesSimple.contains(e)){
+            if (!edgesSimple.contains(e)) {
                 edgesSimple.add(e);
                 System.out.println("ajouté");
-                // System.out.println("Source : " +e.getSource().getNum());
-                // System.out.println("Target : "+ e.getTarget().getNum());
-            }else{
+                System.out.println("Source : " + e.getSource().getNum());
+                System.out.println("Target : " + e.getTarget().getNum());
+            } else {
                 System.out.println("enlevé");
-                // System.out.println("Source : " +e.getSource().getNum());
-                // System.out.println("Target : "+ e.getTarget().getNum());
+                System.out.println("Source : " + e.getSource().getNum());
+                System.out.println("Target : " + e.getTarget().getNum());
             }
         }
         Edge caca = edgesSimple.get(0);
-        // System.out.println("Voisin du sommet "+ caca.getSource().getNum());
+        System.out.println("Voisin du sommet " + caca.getSource().getNum());
         for (Edge ed : caca.getSource().getEdges()) {
-           
-                // System.out.println("Source : " +ed.getSource().getNum());
-                // System.out.println("Target : "+ ed.getTarget().getNum());
-                System.out.println(" ");
+            System.out.println("Source : " + ed.getSource().getNum());
+            System.out.println("Target : " + ed.getTarget().getNum());
+            System.out.println(" ");
         }
         return new Graph(nodes, edgesSimple);
     }
