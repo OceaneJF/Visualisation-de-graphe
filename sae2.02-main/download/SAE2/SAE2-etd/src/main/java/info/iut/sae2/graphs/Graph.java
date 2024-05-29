@@ -497,10 +497,10 @@ public class Graph implements IGraph {
 
         return mergeGraph;
     }
-/**
- * Cette méthode permet de récuperer les sommets de chaque composantes connexes du graph
- * @return la liste des sommets de chaque composantes connexes du graph
- */
+    /**
+    * Cette méthode permet de récuperer les sommets de chaque composantes connexes du graph
+    * @return la liste des sommets de chaque composantes connexes du graph
+    */
     private ArrayList<ArrayList<Node>> findConnectedComponents() {
         //On crée un liste qui va contenir les sommets de chaques composantes connexes
         ArrayList<ArrayList<Node>> connectedComponents = new ArrayList<>();
