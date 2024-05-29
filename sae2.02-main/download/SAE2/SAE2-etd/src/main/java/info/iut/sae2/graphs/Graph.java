@@ -162,7 +162,7 @@ public class Graph implements IGraph {
     @Override
     public void setAllNodesPositions(Coord c) {
         for (Node n : nodes) {
-            n.setPosition(c);
+            this.setNodePosition(n, c);
         }
     }
 
@@ -173,7 +173,7 @@ public class Graph implements IGraph {
     @Override
     public void setAllEdgesPositions(ArrayList<Coord> bends) {
         for (Edge e : edges) {
-            e.setBends(bends);
+            this.setEdgePosition(e, bends);
         }
     }
 
@@ -202,10 +202,10 @@ public class Graph implements IGraph {
     public ArrayList<Node> getNeighbors(Node n) {
         ArrayList<Node> neighbors = new ArrayList<>();
         for (Edge e : n.getEdges()) {
-            if (!e.getSource().equals(n)) {
-                neighbors.add(e.getSource());
+            if (!source(e).equals(n)) {
+                neighbors.add(source(e));
             } else {
-                neighbors.add(e.getTarget());
+                neighbors.add(target(e));
             }
         }
         return neighbors;
@@ -218,8 +218,8 @@ public class Graph implements IGraph {
     public ArrayList<Node> getSuccesors(Node n) {
         ArrayList<Node> succesors = new ArrayList<>();
         for (Edge e : n.getEdges()) {
-            if (!e.getTarget().equals(n)) {
-                succesors.add(e.getTarget());
+            if (!target(e).equals(n)) {
+                succesors.add(target(e));
             }
         }
         return succesors;
@@ -232,8 +232,8 @@ public class Graph implements IGraph {
     public ArrayList<Node> getPredecessors(Node n) {
         ArrayList<Node> predecessors = new ArrayList<>();
         for (Edge e : n.getEdges()) {
-            if (!e.getSource().equals(n)) {
-                predecessors.add(e.getSource());
+            if (!source(e).equals(n)) {
+                predecessors.add(source(e));
             }
         }
         return predecessors;
@@ -256,7 +256,7 @@ public class Graph implements IGraph {
     public ArrayList<Edge> getInEdges(Node n) {
         ArrayList<Edge> inEdges = new ArrayList<>();
         for (Edge e : n.getEdges()) {
-            if (!e.getSource().equals(n)) {
+            if (!source(e).equals(n)) {
                 inEdges.add(e);
             }
         }
@@ -271,7 +271,7 @@ public class Graph implements IGraph {
     public ArrayList<Edge> getOutEdges(Node n) {
         ArrayList<Edge> outEdges = new ArrayList<>();
         for (Edge e : n.getEdges()) {
-            if (!e.getTarget().equals(n)) {
+            if (!target(e).equals(n)) {
                 outEdges.add(e);
             }
         }
@@ -343,14 +343,14 @@ public class Graph implements IGraph {
         if (oriented) {
             ArrayList<Edge> srcOutEdges = getOutEdges(src);
             for (Edge e : srcOutEdges) {
-                if (e.getTarget().equals(tgt)) {
+                if (target(e).equals(tgt)) {
                     return e;
                 }
             }
         } else {
             ArrayList<Edge> srcEdges = getInOutEdges(src);
             for (Edge e : srcEdges) {
-                if (e.getTarget().equals(tgt) || e.getSource().equals(tgt)) {
+                if (target(e).equals(tgt) || source(e).equals(tgt)) {
                     return e;
                 }
             }
@@ -367,8 +367,8 @@ public class Graph implements IGraph {
         ArrayList<Double> coordsX = new ArrayList<Double>();
         ArrayList<Double> coordsY = new ArrayList<Double>();
         for (Node n : nodes) {
-            coordsX.add(n.getPosition().getX());
-            coordsY.add(n.getPosition().getY());
+            coordsX.add(this.getNodePosition(n).getX());
+            coordsY.add(this.getNodePosition(n).getY());
         }
         double xMin = min(coordsX);
         double xMax = max(coordsX);
@@ -449,7 +449,7 @@ public class Graph implements IGraph {
                 // On récupère tous les voisins pas deja visités de chaque sommets visité
                 for (Node node : S) {
                     for (Edge e : node.getEdges()) {
-                        if (!(S.contains(e.getSource()) && S.contains(e.getTarget()))) {
+                        if (!(S.contains(source(e)) && S.contains(target(e)))) {
                             neighbors.add(e);
                         }
                     }
@@ -465,17 +465,17 @@ public class Graph implements IGraph {
 
                 // On récupère le sommet suivant à parcourir qui n'a pas déja été visité
                 Node nextNode;
-                if (!S.contains(edgeMin.getSource())) {
-                    nextNode = edgeMin.getSource();
+                if (!S.contains(source(edgeMin))) {
+                    nextNode = source(edgeMin);
                 } else {
-                    nextNode = edgeMin.getTarget();
+                    nextNode = target(edgeMin);
                 }
                 // On ajoute ce sommet dans la liste des sommets visité
                 S.add(nextNode);
             }
             // On créer un graph pour chaque composante connexe sur lequel on a appliqué
             // l'algorithm de Prim
-            Graph mstGraph = new Graph(nodes, ACM);
+            Graph mstGraph = new Graph(this.getNodes(), ACM);
             // On l'ajoute à la liste des graphs qui correspond aux composantes connexe d'un
             // graph
             graphs.add(mstGraph);
@@ -486,11 +486,11 @@ public class Graph implements IGraph {
         Graph mergeGraph = new Graph();
 
         for (Graph g : graphs) {
-            for (Node nodeG : g.nodes) {
+            for (Node nodeG : g.getNodes()) {
                 mergeGraph.addNode(nodeG);
             }
 
-            for (Edge edgeG : g.edges) {
+            for (Edge edgeG : g.getEdges()) {
                 mergeGraph.addEdge(edgeG);
             }
         }
@@ -508,7 +508,7 @@ public class Graph implements IGraph {
         HashSet<Node> visited = new HashSet<>();
 
         //On détermine la listes des sommets d'une composante connexe du graph et on l'ajoute à la liste de toutes les composantes connexes
-        for (Node node : nodes) {
+        for (Node node : this.getNodes()) {
             if (!visited.contains(node)) {
                 ArrayList<Node> component = new ArrayList<>();
                 dfsForPrim(node, visited, component);
@@ -532,10 +532,10 @@ public class Graph implements IGraph {
         //On parcours par récurrence les sommets de la composante connexe 
         for (Edge edge : node.getEdges()) {
             Node neighbor;
-            if (edge.getTarget().equals(node)) {
-                neighbor = edge.getSource();
+            if (target(edge).equals(node)) {
+                neighbor = source(edge);
             } else {
-                neighbor = edge.getTarget();
+                neighbor = target(edge);
             }
             if (!visited.contains(neighbor)) {
                 dfsForPrim(neighbor, visited, component);
@@ -554,15 +554,15 @@ public class Graph implements IGraph {
     private Edge chooseEdge(ArrayList<Edge> edges) {
         // Initialisation de min
         Edge edgeMin = edges.get(0);
-        Coord srcCoord = edgeMin.getSource().getPosition();
-        Coord tgtCoord = edgeMin.getTarget().getPosition();
+        Coord srcCoord = this.getNodePosition(source(edgeMin));
+        Coord tgtCoord = this.getNodePosition(target(edgeMin));
         double min = srcCoord.dist(tgtCoord);
         double dist;
         // Pour chaque arretes si la distance entre ses deux extrémités est plus petite
         // que la distance minimale alors la distance minimale prend cette distance
         for (int i = 1; i < edges.size(); i++) {
-            srcCoord = edges.get(i).getSource().getPosition();
-            tgtCoord = edges.get(i).getTarget().getPosition();
+            srcCoord = this.getNodePosition(source(edges.get(i)));
+            tgtCoord = this.getNodePosition(target(edges.get(i)));
             dist = srcCoord.dist(tgtCoord);
             if (dist < min) {
                 min = dist;
@@ -586,8 +586,8 @@ public class Graph implements IGraph {
 
         //On enlève les arretes voisines des sommets de l'ACM qui sont présentes dans le graph simple mais pas l'ACM
         for (Edge edge : simpleGraph.getEdges()) {
-            for (Node node : ACM.nodes) {
-                if (node.getEdges().contains(edge) && !ACM.edges.contains(edge)) {
+            for (Node node : ACM.getNodes()) {
+                if (node.getEdges().contains(edge) && !ACM.getEdges().contains(edge)) {
                     node.getEdges().remove(edge);
                 }
             }
@@ -598,15 +598,15 @@ public class Graph implements IGraph {
             // Si cette arrete n'est pas dans l'arbre couvrant minimum
             if (!ACM.getEdges().contains(edge)) {
                 // On cherche les brisures de cette arrete
-                path = findBends(ACM, edge.getSource(), edge.getTarget());
+                path = findBends(ACM, source(edge), target(edge));
                 if (path != null && path.size() > 2) {
                     // On retire le sommet source et le sommet destination de la listes des brisures
-                    path.remove(edge.getSource());
-                    path.remove(edge.getTarget());
+                    path.remove(source(edge));
+                    path.remove(target(edge));
                     // On les met dans bends
                     ArrayList<Coord> newBends = new ArrayList<>();
                     for (Node node : path) {
-                        newBends.add(node.getPosition());
+                        newBends.add(this.getNodePosition(node));
                     }
                     //On donne les coordonnées des brisures à chaque arrete du graphe simple 
                     simpleGraph.setEdgePosition(edge, newBends);
@@ -689,12 +689,12 @@ public class Graph implements IGraph {
      */
     private Graph simpleGraph() {
         ArrayList<Edge> edgesSimple = new ArrayList<Edge>();
-        for (Edge e : this.edges) {
+        for (Edge e : this.getEdges()) {
             if (!edgesSimple.contains(e)) {
                 edgesSimple.add(e);
             }
         }
-        return new Graph(nodes, edgesSimple);
+        return new Graph(this.getNodes(), edgesSimple);
     }
 
 }
