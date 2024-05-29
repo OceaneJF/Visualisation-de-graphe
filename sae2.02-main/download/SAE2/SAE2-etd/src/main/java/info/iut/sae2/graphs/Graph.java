@@ -421,83 +421,85 @@ public class Graph implements IGraph {
      */
     @Override
     public Graph getMinimumSpanningTree() {
-        // Les arretes de l'ACM
-        ArrayList<Edge> ACM = new ArrayList<>();
-        // Les sommets de l'ACM
-        ArrayList<Node> S = new ArrayList<>();
-        // Toutes les arretes voisines des sommets visités
-        ArrayList<Edge> neighbors = new ArrayList<>();
-
-        // On cherche toutes les composantes connexes et on les met dans un tableau de
-        // tableau
         Algos a = new Algos(this);
-        ArrayList<ArrayList<Node>> connectedComponents = a.findConnectedComponents();
-        // On crée une liste de Graphs qui correspondent à chacuunes des composantes
-        // connexes
-        ArrayList<Graph> graphs = new ArrayList<>();
+        return a.getMinimumSpanningTree();
+        // // Les arretes de l'ACM
+        // ArrayList<Edge> ACM = new ArrayList<>();
+        // // Les sommets de l'ACM
+        // ArrayList<Node> S = new ArrayList<>();
+        // // Toutes les arretes voisines des sommets visités
+        // ArrayList<Edge> neighbors = new ArrayList<>();
 
-        // On fait l'algorithm de Prim pour chacune des composantes connexes
-        for (ArrayList<Node> component : connectedComponents) {
-            // On efface le contenu de toutes les listes
-            S.clear();
-            ACM.clear();
+        // // On cherche toutes les composantes connexes et on les met dans un tableau de
+        // // tableau
+        // Algos a = new Algos(this);
+        // ArrayList<ArrayList<Node>> connectedComponents = a.findConnectedComponents();
+        // // On crée une liste de Graphs qui correspondent à chacuunes des composantes
+        // // connexes
+        // ArrayList<Graph> graphs = new ArrayList<>();
 
-            // Initialisation
-            Node U = component.get(0);
-            S.add(U);
+        // // On fait l'algorithm de Prim pour chacune des composantes connexes
+        // for (ArrayList<Node> component : connectedComponents) {
+        //     // On efface le contenu de toutes les listes
+        //     S.clear();
+        //     ACM.clear();
 
-            // Tant qu'on a pas parcouru tous les sommets de la composante connexe
-            while (S.size() < component.size()) {
-                // On récupère tous les voisins pas deja visités de chaque sommets visité
-                for (Node node : S) {
-                    for (Edge e : node.getEdges()) {
-                        if (!(S.contains(source(e)) && S.contains(target(e)))) {
-                            neighbors.add(e);
-                        }
-                    }
-                }
+        //     // Initialisation
+        //     Node U = component.get(0);
+        //     S.add(U);
 
-                // Parmis ces arretes voisines on choisit celles dont la distance entre sa
-                // source et sa destination est la plus petite
-                Edge edgeMin = chooseEdge(neighbors);
-                // On ajoute cette arrete dans l'ACM
-                ACM.add(edgeMin);
-                // On éfface le contenu de la liste des arretes voisines
-                neighbors.clear();
+        //     // Tant qu'on a pas parcouru tous les sommets de la composante connexe
+        //     while (S.size() < component.size()) {
+        //         // On récupère tous les voisins pas deja visités de chaque sommets visité
+        //         for (Node node : S) {
+        //             for (Edge e : node.getEdges()) {
+        //                 if (!(S.contains(source(e)) && S.contains(target(e)))) {
+        //                     neighbors.add(e);
+        //                 }
+        //             }
+        //         }
 
-                // On récupère le sommet suivant à parcourir qui n'a pas déja été visité
-                Node nextNode;
-                if (!S.contains(source(edgeMin))) {
-                    nextNode = source(edgeMin);
-                } else {
-                    nextNode = target(edgeMin);
-                }
-                // On ajoute ce sommet dans la liste des sommets visité
-                S.add(nextNode);
-            }
-            // On créer un graph pour chaque composante connexe sur lequel on a appliqué
-            // l'algorithm de Prim
-            Graph mstGraph = new Graph(this.getNodes(), ACM);
-            // On l'ajoute à la liste des graphs qui correspond aux composantes connexe d'un
-            // graph
-            graphs.add(mstGraph);
-        }
+        //         // Parmis ces arretes voisines on choisit celles dont la distance entre sa
+        //         // source et sa destination est la plus petite
+        //         Edge edgeMin = chooseEdge(neighbors);
+        //         // On ajoute cette arrete dans l'ACM
+        //         ACM.add(edgeMin);
+        //         // On éfface le contenu de la liste des arretes voisines
+        //         neighbors.clear();
 
-        // Un créer un nouveau graph qui correspond au regroupement des composantes
-        // connexes sur lequels on a appliqué l'algorithm de Prim
-        Graph mergeGraph = new Graph();
+        //         // On récupère le sommet suivant à parcourir qui n'a pas déja été visité
+        //         Node nextNode;
+        //         if (!S.contains(source(edgeMin))) {
+        //             nextNode = source(edgeMin);
+        //         } else {
+        //             nextNode = target(edgeMin);
+        //         }
+        //         // On ajoute ce sommet dans la liste des sommets visité
+        //         S.add(nextNode);
+        //     }
+        //     // On créer un graph pour chaque composante connexe sur lequel on a appliqué
+        //     // l'algorithm de Prim
+        //     Graph mstGraph = new Graph(this.getNodes(), ACM);
+        //     // On l'ajoute à la liste des graphs qui correspond aux composantes connexe d'un
+        //     // graph
+        //     graphs.add(mstGraph);
+        // }
 
-        for (Graph g : graphs) {
-            for (Node nodeG : g.getNodes()) {
-                mergeGraph.addNode(nodeG);
-            }
+        // // Un créer un nouveau graph qui correspond au regroupement des composantes
+        // // connexes sur lequels on a appliqué l'algorithm de Prim
+        // Graph mergeGraph = new Graph();
 
-            for (Edge edgeG : g.getEdges()) {
-                mergeGraph.addEdge(edgeG);
-            }
-        }
+        // for (Graph g : graphs) {
+        //     for (Node nodeG : g.getNodes()) {
+        //         mergeGraph.addNode(nodeG);
+        //     }
 
-        return mergeGraph;
+        //     for (Edge edgeG : g.getEdges()) {
+        //         mergeGraph.addEdge(edgeG);
+        //     }
+        // }
+
+        // return mergeGraph;
     }
 
     // /**
@@ -547,34 +549,34 @@ public class Graph implements IGraph {
     // }
 
 
-    /**
-     * Cette méthode retourne l'arrete qui a le cout le plus petit parmis la liste
-     * d'arretes passé en parametre
-     *
-     * @param edges la listes des arretes
-     * @return l'arrete qui a le cout le plus petit
-     */
-    private Edge chooseEdge(ArrayList<Edge> edges) {
-        // Initialisation de min
-        Edge edgeMin = edges.get(0);
-        Coord srcCoord = this.getNodePosition(source(edgeMin));
-        Coord tgtCoord = this.getNodePosition(target(edgeMin));
-        double min = srcCoord.dist(tgtCoord);
-        double dist;
-        // Pour chaque arretes si la distance entre ses deux extrémités est plus petite
-        // que la distance minimale alors la distance minimale prend cette distance
-        for (int i = 1; i < edges.size(); i++) {
-            srcCoord = this.getNodePosition(source(edges.get(i)));
-            tgtCoord = this.getNodePosition(target(edges.get(i)));
-            dist = srcCoord.dist(tgtCoord);
-            if (dist < min) {
-                min = dist;
-                edgeMin = edges.get(i);
-            }
-        }
-        return edgeMin;
+    // /**
+    //  * Cette méthode retourne l'arrete qui a le cout le plus petit parmis la liste
+    //  * d'arretes passé en parametre
+    //  *
+    //  * @param edges la listes des arretes
+    //  * @return l'arrete qui a le cout le plus petit
+    //  */
+    // private Edge chooseEdge(ArrayList<Edge> edges) {
+    //     // Initialisation de min
+    //     Edge edgeMin = edges.get(0);
+    //     Coord srcCoord = this.getNodePosition(source(edgeMin));
+    //     Coord tgtCoord = this.getNodePosition(target(edgeMin));
+    //     double min = srcCoord.dist(tgtCoord);
+    //     double dist;
+    //     // Pour chaque arretes si la distance entre ses deux extrémités est plus petite
+    //     // que la distance minimale alors la distance minimale prend cette distance
+    //     for (int i = 1; i < edges.size(); i++) {
+    //         srcCoord = this.getNodePosition(source(edges.get(i)));
+    //         tgtCoord = this.getNodePosition(target(edges.get(i)));
+    //         dist = srcCoord.dist(tgtCoord);
+    //         if (dist < min) {
+    //             min = dist;
+    //             edgeMin = edges.get(i);
+    //         }
+    //     }
+    //     return edgeMin;
 
-    }
+    // }
 
 
     @Override
