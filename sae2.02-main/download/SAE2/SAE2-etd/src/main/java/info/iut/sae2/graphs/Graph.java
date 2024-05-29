@@ -412,10 +412,11 @@ public class Graph implements IGraph {
         }
         return max;
     }
-
+    
     /**
-     * Cette méthode retourne un arbre couvrant de cout minimum en utilisant
-     * l'algorithm de Prim
+     * // * Cette méthode retourne un arbre couvrant de cout minimum en utilisant
+     * // * l'algorithm de Prim
+     * //
      */
     @Override
     public Graph getMinimumSpanningTree() {
@@ -425,64 +426,128 @@ public class Graph implements IGraph {
         ArrayList<Node> S = new ArrayList<>();
         // Toutes les arretes voisines des sommets visités
         ArrayList<Edge> neighbors = new ArrayList<>();
-        // Les arretes voisines des sommets visités sans les arretes deja visités
-        ArrayList<Edge> neighborsWithoutVisited;
-        // Initialisation
-        Edge edgeMin = null;
-        Node U = nodes.get(0);
-        S.add(U);
-        // Tant qu'on a pas parcouru tous les sommets
-        while (S.size() < nodes.size()) {
-            // Pour chaque sommet qu'on a deja parcouru on récupere tous ses voisins et on
-            // les mets dans neighbors
-            for (Node node : S) {
-                neighbors.addAll(node.getEdges());
-            }
-            // On supprime les arretes voisines deja visités et on les mets dans
-            // neighborsWithoutVisited
-            neighborsWithoutVisited = removeVisitedNeighbors(neighbors, S);
-            // On récupere l'arrete qui a le cout le plus faibles parmis les arretes
-            // voisines non visités et on la met dans edgeMin
-            edgeMin = chooseEdge(neighborsWithoutVisited);
-            // On ajoute cette arrete dans l'ACM
-            ACM.add(edgeMin);
-            // On ajoute le sommet de l'arrete qui n'a pas déja été visité et on l'ajoute
-            // dans la liste des sommets visités
-            S.add(notVisitedNode(edgeMin, S));
-            // On éfface le contenu de neighbors
-            neighbors.clear();
 
+        // On cherche toutes les composantes connexes et on les met dans un tableau de
+        // tableau
+        ArrayList<ArrayList<Node>> connectedComponents = findConnectedComponents();
+        // On crée une liste de Graphs qui correspondent à chacuunes des composantes
+        // connexes
+        ArrayList<Graph> graphs = new ArrayList<>();
+
+        // On fait l'algorithm de Prim pour chacune des composantes connexes
+        for (ArrayList<Node> component : connectedComponents) {
+            // On efface le contenu de toutes les listes
+            S.clear();
+            ACM.clear();
+
+            // Initialisation
+            Node U = component.get(0);
+            S.add(U);
+
+            // Tant qu'on a pas parcouru tous les sommets de la composante connexe
+            while (S.size() < component.size()) {
+                // On récupère tous les voisins pas deja visités de chaque sommets visité
+                for (Node node : S) {
+                    for (Edge e : node.getEdges()) {
+                        if (!(S.contains(e.getSource()) && S.contains(e.getTarget()))) {
+                            neighbors.add(e);
+                        }
+                    }
+                }
+
+                // Parmis ces arretes voisines on choisit celles dont la distance entre sa
+                // source et sa destination est la plus petite
+                Edge edgeMin = chooseEdge(neighbors);
+                // On ajoute cette arrete dans l'ACM
+                ACM.add(edgeMin);
+                // On éfface le contenu de la liste des arretes voisines
+                neighbors.clear();
+
+                // On récupère le sommet suivant à parcourir qui n'a pas déja été visité
+                Node nextNode;
+                if (!S.contains(edgeMin.getSource())) {
+                    nextNode = edgeMin.getSource();
+                } else {
+                    nextNode = edgeMin.getTarget();
+                }
+                // On ajoute ce sommet dans la liste des sommets visité
+                S.add(nextNode);
+            }
+            // On créer un graph pour chaque composante connexe sur lequel on a appliqué
+            // l'algorithm de Prim
+            Graph mstGraph = new Graph(nodes, ACM);
+            // On l'ajoute à la liste des graphs qui correspond aux composantes connexe d'un
+            // graph
+            graphs.add(mstGraph);
         }
-        // On créer l'ACM et on le retourne
-        Graph graph = new Graph(S, ACM);
-        return graph;
+
+        // Un créer un nouveau graph qui correspond au regroupement des composantes
+        // connexes sur lequels on a appliqué l'algorithm de Prim
+        Graph mergeGraph = new Graph();
+
+        for (Graph g : graphs) {
+            for (Node nodeG : g.nodes) {
+                mergeGraph.addNode(nodeG);
+            }
+
+            for (Edge edgeG : g.edges) {
+                mergeGraph.addEdge(edgeG);
+            }
+        }
+
+        return mergeGraph;
+    }
+/**
+ * Cette méthode permet de récuperer les sommets de chaque composantes connexes du graph
+ * @return la liste des sommets de chaque composantes connexes du graph
+ */
+    private ArrayList<ArrayList<Node>> findConnectedComponents() {
+        //On crée un liste qui va contenir les sommets de chaques composantes connexes
+        ArrayList<ArrayList<Node>> connectedComponents = new ArrayList<>();
+        //On crée la liste des sommets visités
+        HashSet<Node> visited = new HashSet<>();
+
+        //On détermine la listes des sommets d'une composante connexe du graph et on l'ajoute à la liste de toutes les composantes connexes
+        for (Node node : nodes) {
+            if (!visited.contains(node)) {
+                ArrayList<Node> component = new ArrayList<>();
+                dfsForPrim(node, visited, component);
+                connectedComponents.add(component);
+            }
+        }
+
+        return connectedComponents;
     }
 
     /**
-     * Cette méthode retourne toutes les arretes voisines des sommets visités sauf
-     * les arretes deja visités
-     * 
-     * @param neighbors toutes les arretes voisines des sommets visités
-     * @param S         l'ensemble des sommets visités
-     * @return toutes les arretes voisines des sommets visités sauf les arretes deja
-     *         visités
+     * Cette méthode permet de déterminer les sommets d'une composante connexes du graph 
+     * @param node le sommet de départ de l'algorithme
+     * @param visited la liste des sommets visités
+     * @param component la liste des sommets d'une composante connexe
      */
-    private ArrayList<Edge> removeVisitedNeighbors(ArrayList<Edge> neighbors, ArrayList<Node> S) {
-        ArrayList<Edge> newNeighbors = new ArrayList<>(neighbors);
-        // Si le sommet source et destination de l'arrete sont contenu dans la liste des
-        // sommets deja visité alors on retire cette arrete de neighbors
-        for (Edge e : neighbors) {
-            if (S.contains(e.getSource()) && S.contains(e.getTarget())) {
-                newNeighbors.remove(e);
+    private void dfsForPrim(Node node, HashSet<Node> visited, ArrayList<Node> component) {
+        //On ajoute le sommet courant dans la liste des sommets visités et dans la liste de sommets de la composante connexe 
+        visited.add(node);
+        component.add(node);
+        //On parcours par récurrence les sommets de la composante connexe 
+        for (Edge edge : node.getEdges()) {
+            Node neighbor;
+            if (edge.getTarget().equals(node)) {
+                neighbor = edge.getSource();
+            } else {
+                neighbor = edge.getTarget();
+            }
+            if (!visited.contains(neighbor)) {
+                dfsForPrim(neighbor, visited, component);
             }
         }
-        return newNeighbors;
     }
+
 
     /**
      * Cette méthode retourne l'arrete qui a le cout le plus petit parmis la liste
      * d'arretes passé en parametre
-     * 
+     *
      * @param edges la listes des arretes
      * @return l'arrete qui a le cout le plus petit
      */
@@ -508,73 +573,65 @@ public class Graph implements IGraph {
 
     }
 
-    /**
-     * Cette méthode retourne l'extrémité de l'arrete qui n'est pas deja visité
-     * 
-     * @param edge l'arrete dont on veut connaitre l'extrémité qui n'est pas deja
-     *             visité
-     * @param S    la liste des sommets deja visité
-     * @return le sommet de l'arrete qui n'a pas deja été visité
-     */
-    private Node notVisitedNode(Edge edge, ArrayList<Node> S) {
-        Node src = edge.getSource();
-        Node tgt = edge.getTarget();
-        if (S.contains(src)) {
-            return tgt;
-        } else {
-            return src;
-        }
-    }
 
     @Override
     public void bundle() {
-        // L'arbre couvrant de cout minimum du graph
-        Graph ACM = getMinimumSpanningTree();
         // La liste des sommets du chemin
         ArrayList<Node> path;
         // On crée le graphe simplifié
         Graph simpleGraph = simpleGraph();
+
+        // L'arbre couvrant de cout minimum du graph
+        Graph ACM = getMinimumSpanningTree();
+
+        //On enlève les arretes voisines des sommets de l'ACM qui sont présentes dans le graph simple mais pas l'ACM
+        for (Edge edge : simpleGraph.getEdges()) {
+            for (Node node : ACM.nodes) {
+                if (node.getEdges().contains(edge) && !ACM.edges.contains(edge)) {
+                    node.getEdges().remove(edge);
+                }
+            }
+        }
+
         // Pour chaque arrete du graphe
         for (Edge edge : simpleGraph.getEdges()) {
             // Si cette arrete n'est pas dans l'arbre couvrant minimum
-            System.out.println("test");
             if (!ACM.getEdges().contains(edge)) {
-                System.out.println("y'a pas edge dans ACM");
                 // On cherche les brisures de cette arrete
                 path = findBends(ACM, edge.getSource(), edge.getTarget());
-                
-                if (path != null) {
+                if (path != null && path.size() > 2) {
                     // On retire le sommet source et le sommet destination de la listes des brisures
-                    System.out.println("Size of path : "+path.size()+ " node1 "+ path.get(0).getNum()+ " node2 "+ path.get(1).getNum());
                     path.remove(edge.getSource());
                     path.remove(edge.getTarget());
-                    System.out.println("Size of path : "+path.size());
                     // On les met dans bends
-
                     ArrayList<Coord> newBends = new ArrayList<>();
                     for (Node node : path) {
-                        System.out.println(node.getNum() + " bends");
-                        System.out.println(edge.getSource().getNum() + " src edge");
-                        System.out.println(edge.getTarget().getNum() + " tgt edge");
-                        System.out.println(" ");
                         newBends.add(node.getPosition());
-
                     }
-                    System.out.println("fin bends");
+                    //On donne les coordonnées des brisures à chaque arrete du graphe simple 
                     simpleGraph.setEdgePosition(edge, newBends);
+
                 }
 
             }
-            else{
-                System.out.println("IL EST PAS PASSE !!!");
-            }
         }
+        //On remplace du graphe par les arretes du graphe simple 
         this.setEdges(simpleGraph.getEdges());
     }
 
+    /**
+     * Cette méthode permet de récuperer la listes des sommets parcouru pour aller d'un sommet source à un sommet destination de l'ACM
+     * @param ACM l'arbre couvrant de cout minimal du graphe
+     * @param src le sommet source 
+     * @param tgt le sommet destination 
+     * @return la listes des sommets parcouru pour aller d'un sommet source à un sommet destination de l'ACM
+     */
     private ArrayList<Node> findBends(Graph ACM, Node src, Node tgt) {
         // On créer une liste des sommets qui ont été visités
-        ArrayList<Node> visited = new ArrayList<>();
+        HashMap<Integer, Boolean> visited = new HashMap<>();
+        for (Node n : ACM.getNodes()) {
+            visited.put(n.getNum(), false);
+        }
         // On créer une liste des sommets par lequelles ont passe pour aller du sommet
         // source au sommet destination
         ArrayList<Node> path = new ArrayList<>();
@@ -584,15 +641,24 @@ public class Graph implements IGraph {
             // on retourne les sommets du chemin parcouru
             return path;
         }
-        System.out.println("Path est null, on n'a pas trouvé le sommet target :(");
         return null;
     }
 
-    private boolean DFS(Graph ACM, Node src, Node tgt, ArrayList<Node> path, ArrayList<Node> visited) {
+    /**
+     * Cette méthode permet de déterminer le plus court chemin entre deux sommets grace à l'algorithme de parcours en profondeur 
+     * @param ACM l'arbre couvrant de cout minimum
+     * @param src le sommet source
+     * @param tgt le sommet destination
+     * @param path la liste des sommets parcouru
+     * @param visited les sommets qui ont été visités
+     * @return true si le sommet destination à été atteint false sinon 
+     */
+    private boolean DFS(Graph ACM, Node src, Node tgt, ArrayList<Node> path,
+            HashMap<Integer, Boolean> visited) {
         // On ajoute le sommet dans le chemin
         path.add(src);
         // On ajoute le sommet dans la liste des sommets visités
-        visited.add(src);
+        visited.put(src.getNum(), true);
         // Si le sommet que l'on est entrain de visiter est la destination alors on
         // retourne true
         if (src.equals(tgt)) {
@@ -602,14 +668,13 @@ public class Graph implements IGraph {
         // Pour chaque sommet voisin du sommet passé en parametre
         for (Node n : ACM.getNeighbors(src)) {
             // Si il a pas déja été visité
-            if (!visited.contains(n)) {
+            if (!visited.get(n.getNum())) {
                 // et qu'il s'agit de la destination, on retourne true
                 if (DFS(ACM, n, tgt, path, visited)) {
                     return true;
                 }
             }
         }
-
         // Si le sommet n'a pas de voisins ou qu'ils ont tous déja été visité et qu'il
         // ne s'agit pas de la destination on remonte en arriere et on l'enleve de la
         // liste des sommet du chemin et on retourne false
@@ -619,18 +684,16 @@ public class Graph implements IGraph {
 
     /**
      * Permet de construire un graphe dont les arrêtes ne sont pas en double.
+     *
      * @return un graphe simplifié
      */
-    private Graph simpleGraph(){
+    private Graph simpleGraph() {
         ArrayList<Edge> edgesSimple = new ArrayList<Edge>();
         for (Edge e : this.edges) {
-            if(!edgesSimple.contains(e)){
+            if (!edgesSimple.contains(e)) {
                 edgesSimple.add(e);
-                System.out.println("Source : " +e.getSource().getNum());
-                System.out.println("Target : "+ e.getTarget().getNum());
             }
         }
-        
         return new Graph(nodes, edgesSimple);
     }
 

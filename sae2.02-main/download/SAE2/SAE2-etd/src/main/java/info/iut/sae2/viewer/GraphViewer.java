@@ -64,7 +64,7 @@ public class GraphViewer extends JFrame {
         contentPane.add(filenameLabel, c);
 
         String filenames[] = { "Hollywood", "US Migration", "UBC CS website",
-                "Air traffic 2000", "Example", "Test CJ", "Test EB", "Test EBB" };
+                "Air Traffic", "Example", "Test CJ", "Test EB", "Test EBB" };
         JComboBox fileChooser = new JComboBox(filenames);
         fileChooser.setSelectedIndex(-1);
         c.fill = GridBagConstraints.HORIZONTAL;
