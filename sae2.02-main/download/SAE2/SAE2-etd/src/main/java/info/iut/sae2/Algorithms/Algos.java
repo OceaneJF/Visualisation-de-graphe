@@ -8,11 +8,17 @@ import info.iut.sae2.graphs.*;
 
 public class Algos {
 
+    private Graph g;
+
+    public Algos(Graph gra){
+        g = gra;
+    }
+
     /**
     * Cette méthode permet de récuperer les sommets de chaque composantes connexes du graph
     * @return la liste des sommets de chaque composantes connexes du graph
     */
-    private ArrayList<ArrayList<Node>> findConnectedComponents(Graph g) {
+    public ArrayList<ArrayList<Node>> findConnectedComponents() {
         //On crée un liste qui va contenir les sommets de chaques composantes connexes
         ArrayList<ArrayList<Node>> connectedComponents = new ArrayList<>();
         //On crée la liste des sommets visités
@@ -22,7 +28,7 @@ public class Algos {
         for (Node node : g.getNodes()) {
             if (!visited.contains(node)) {
                 ArrayList<Node> component = new ArrayList<>();
-                dfsForPrim(g, node, visited, component);
+                dfsForPrim(node, visited, component);
                 connectedComponents.add(component);
             }
         }
@@ -36,7 +42,7 @@ public class Algos {
      * @param visited la liste des sommets visités
      * @param component la liste des sommets d'une composante connexe
      */
-    private void dfsForPrim(Graph g, Node node, HashSet<Node> visited, ArrayList<Node> component) {
+    private void dfsForPrim(Node node, HashSet<Node> visited, ArrayList<Node> component) {
         //On ajoute le sommet courant dans la liste des sommets visités et dans la liste de sommets de la composante connexe 
         visited.add(node);
         component.add(node);
@@ -49,45 +55,17 @@ public class Algos {
                 neighbor = g.target(edge);
             }
             if (!visited.contains(neighbor)) {
-                dfsForPrim(g, neighbor, visited, component);
+                dfsForPrim(neighbor, visited, component);
             }
         }
     }
 
-    /**
-     * Cette méthode retourne l'arrete qui a le cout le plus petit parmis la liste
-     * d'arretes passé en parametre
-     *
-     * @param edges la listes des arretes
-     * @return l'arrete qui a le cout le plus petit
-     */
-    private Edge chooseEdge(Graph g, ArrayList<Edge> edges) {
-        // Initialisation de min
-        Edge edgeMin = edges.get(0);
-        Coord srcCoord = g.getNodePosition(g.source(edgeMin));
-        Coord tgtCoord = g.getNodePosition(g.target(edgeMin));
-        double min = srcCoord.dist(tgtCoord);
-        double dist;
-        // Pour chaque arretes si la distance entre ses deux extrémités est plus petite
-        // que la distance minimale alors la distance minimale prend cette distance
-        for (int i = 1; i < edges.size(); i++) {
-            srcCoord = g.getNodePosition(g.source(edges.get(i)));
-            tgtCoord = g.getNodePosition(g.target(edges.get(i)));
-            dist = srcCoord.dist(tgtCoord);
-            if (dist < min) {
-                min = dist;
-                edgeMin = edges.get(i);
-            }
-        }
-        return edgeMin;
 
-    }
-
-    public void bundle(Graph g) {
+    public void bundle() {
         // La liste des sommets du chemin
         ArrayList<Node> path;
         // On crée le graphe simplifié
-        Graph simpleGraph = simpleGraph(g);
+        Graph simpleGraph = simpleGraph();
 
         // L'arbre couvrant de cout minimum du graph
         Graph ACM = g.getMinimumSpanningTree();
@@ -106,7 +84,7 @@ public class Algos {
             // Si cette arrete n'est pas dans l'arbre couvrant minimum
             if (!ACM.getEdges().contains(edge)) {
                 // On cherche les brisures de cette arrete
-                path = findBends(g, ACM, g.source(edge), g.target(edge));
+                path = findBends(ACM, g.source(edge), g.target(edge));
                 if (path != null && path.size() > 2) {
                     // On retire le sommet source et le sommet destination de la listes des brisures
                     path.remove(g.source(edge));
@@ -134,7 +112,7 @@ public class Algos {
      * @param tgt le sommet destination 
      * @return la listes des sommets parcouru pour aller d'un sommet source à un sommet destination de l'ACM
      */
-    private ArrayList<Node> findBends(Graph g, Graph ACM, Node src, Node tgt) {
+    private ArrayList<Node> findBends(Graph ACM, Node src, Node tgt) {
         // On créer une liste des sommets qui ont été visités
         HashMap<Integer, Boolean> visited = new HashMap<>();
         for (Node n : ACM.getNodes()) {
@@ -195,7 +173,7 @@ public class Algos {
      *
      * @return un graphe simplifié
      */
-    private Graph simpleGraph(Graph g) {
+    private Graph simpleGraph() {
         ArrayList<Edge> edgesSimple = new ArrayList<Edge>();
         for (Edge e : g.getEdges()) {
             if (!edgesSimple.contains(e)) {
