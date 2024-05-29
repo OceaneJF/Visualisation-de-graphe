@@ -141,16 +141,9 @@ public class GraphTest {
         ArrayList<Node> actual = graph1.getNeighbors(node1);
 
         ArrayList<Node> expected= new ArrayList<>();
-        expected.add(node3);
         expected.add(node2);
-        System.out.println("SDQSDQSDSDQSQSDSDQSDQSDQSDQSDQSDQSDQSDDSQDQSDQSDQSDSDSQDSQD");
+        expected.add(node3);
         assertArrayEquals(expected.toArray(), actual.toArray());
-
-    }
-
-    @Test
-    public void testGetNeighbors2() {
-
     }
 
     @Test

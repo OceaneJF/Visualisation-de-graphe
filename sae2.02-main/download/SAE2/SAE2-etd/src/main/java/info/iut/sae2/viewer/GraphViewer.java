@@ -64,7 +64,7 @@ public class GraphViewer extends JFrame {
         contentPane.add(filenameLabel, c);
 
         String filenames[] = { "Hollywood", "US Migration", "UBC CS website",
-                "Air Traffic", "Example", "Test CJ", "Test EB", "Test EBB" };
+                "Air Traffic", "Example", "Test CJ", "Test EB", "Test EBB","Test CO" };
         JComboBox fileChooser = new JComboBox(filenames);
         fileChooser.setSelectedIndex(-1);
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -235,6 +235,8 @@ public class GraphViewer extends JFrame {
 
         } else if (filename.equals("Test EBB")) {
             graph = GraphLoader.loadFromFile("testEBB_nodes.csv", "testEBB_edges.csv");
+        }else if (filename.equals("Test CO")) {
+            graph = GraphLoader.loadFromFile("testCO_nodes.csv", "testCO_edges.csv");
         }
 
         currentGraph = graph;
