@@ -89,8 +89,8 @@ public class GraphTest {
     @Test
     public void testGetBoundingBox() {
         ArrayList<Coord> actual = graph1.getBoundingBox();
-        Coord co1 = new Coord(6, 8);
-        Coord co2 = new Coord(8, 12);
+        Coord co1 = new Coord(6, 12);
+        Coord co2 = new Coord(8, 8);
         assertTrue(actual.size() == 2);
         assertTrue(actual.contains(co1));
         assertTrue(actual.contains(co2));

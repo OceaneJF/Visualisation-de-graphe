@@ -373,8 +373,8 @@ public class Graph implements IGraph {
         double yMin = min(coordsY);
         double yMax = max(coordsY);
         ArrayList<Coord> rect = new ArrayList<>();
-        rect.add(new Coord(xMin, yMin));
-        rect.add(new Coord(xMax, yMax));
+        rect.add(new Coord(xMin, yMax));
+        rect.add(new Coord(xMax, yMin));
         return rect;
     }
 
