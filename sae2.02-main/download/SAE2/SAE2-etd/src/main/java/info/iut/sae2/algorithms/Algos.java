@@ -200,7 +200,7 @@ public class Algos {
         // tableau
         Algos a = new Algos(g);
         ArrayList<ArrayList<Node>> connectedComponents = a.findConnectedComponents();
-        // On crée une liste de Graphs qui correspondent à chacuunes des composantes
+        // On crée une liste de Graphs qui correspondent à chacunes des composantes
         // connexes
         ArrayList<Graph> graphs = new ArrayList<>();
 

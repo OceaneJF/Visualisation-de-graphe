@@ -11,12 +11,12 @@ import info.iut.sae2.algorithms.Algos;
 public class Graph implements IGraph {
 
     /**
-     * Tous les sommets du graph
+     * Tous les sommets du graphe
      */
     private ArrayList<Node> nodes;
 
     /**
-     * Toutes les arretes du graph
+     * Toutes les arretes du graphe
      */
     private ArrayList<Edge> edges;
 
@@ -36,7 +36,7 @@ public class Graph implements IGraph {
 
     /**
      * Cette méthode crée et ajoute un nouveaux sommet à la liste des sommets du
-     * graph
+     * graphe
      */
     @Override
     public Node addNode() {
@@ -45,7 +45,7 @@ public class Graph implements IGraph {
     }
 
     /**
-     * Cette méthode permet de récuperer la liste de tous les sommets du graph
+     * Cette méthode permet de récuperer la liste de tous les sommets du graphe
      */
     @Override
     public ArrayList<Node> getNodes() {
@@ -54,7 +54,7 @@ public class Graph implements IGraph {
 
     /**
      * Cette méthode permet d'ajouter un sommet passé en paramètre dans la liste des
-     * sommets du graph
+     * sommets du graphe
      */
     @Override
     public Node addNode(Node n) {
@@ -63,7 +63,7 @@ public class Graph implements IGraph {
     }
 
     /*
-     * Cette méthode permet d'ajouter une arrete au graph
+     * Cette méthode permet d'ajouter une arrete au graphe
      */
     @Override
     public Edge addEdge(Edge e) {
@@ -72,7 +72,7 @@ public class Graph implements IGraph {
     }
 
     /**
-     * Cette méthode permet d'ajouter une arrete dans la listes d'arretes du graph
+     * Cette méthode permet d'ajouter une arrete dans la listes d'arretes du graphe
      * en précisant son sommet source et de destination
      */
     @Override
@@ -82,7 +82,7 @@ public class Graph implements IGraph {
     }
 
     /**
-     * Cette méthode permet de supprimer un sommet de la liste des sommets du graph
+     * Cette méthode permet de supprimer un sommet de la liste des sommets du graphe
      */
     @Override
     public void delNode(Node n) {
@@ -90,7 +90,7 @@ public class Graph implements IGraph {
     }
 
     /**
-     * Cette méthode permet de supprimer une arrete de la liste des arretes du graph
+     * Cette méthode permet de supprimer une arrete de la liste des arretes du graphe
      */
     @Override
     public void delEdge(Edge e) {
@@ -98,7 +98,7 @@ public class Graph implements IGraph {
     }
 
     /**
-     * Cette méthode permet de récuperer toutes les arrètes du graph
+     * Cette méthode permet de récuperer toutes les arrètes du graphe
      */
     @Override
     public ArrayList<Edge> getEdges() {
@@ -106,7 +106,7 @@ public class Graph implements IGraph {
     }
 
     /**
-     * Cette méthode permet de déterminer le nombre de sommets présent dans le graph
+     * Cette méthode permet de déterminer le nombre de sommets présent dans le graphe
      */
     @Override
     public int numberOfNodes() {
@@ -114,7 +114,7 @@ public class Graph implements IGraph {
     }
 
     /**
-     * Cette méthode permet de déterminer le nombre d'arrets présentes dans le graph
+     * Cette méthode permet de déterminer le nombre d'arrets présentes dans le graphe
      */
     @Override
     public int numberOfEdges() {

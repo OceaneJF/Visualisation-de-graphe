@@ -68,7 +68,9 @@ public class Edge {
 
     }
 
-
+    /**
+     * Deux arrêtes sont les mêmes si elles ont la même source et la même destination
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -78,6 +80,9 @@ public class Edge {
         return result;
     }
 
+    /**
+     * Deux arrêtes sont les mêmes si elles ont la même source et la même destination
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
