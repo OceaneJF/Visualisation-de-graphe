@@ -1,5 +1,8 @@
 package info.iut.sae2.graphs;
-
+/**
+ *
+ * @author cbardot et ojfrancois
+ */
 public class Coord {
     private double x, y;
 

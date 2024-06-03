@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 import info.iut.sae2.algorithms.Algos;
 
+/**
+ *
+ * @author cbardot et ojfrancois
+ */
 public class Graph implements IGraph {
 
     /**

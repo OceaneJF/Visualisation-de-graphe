@@ -4,6 +4,10 @@ import java.util.HashSet;
 
 import info.iut.sae2.viewer.GraphCanvas;
 
+/**
+ *
+ * @author cbardot et ojfrancois
+ */
 public class Node {
 
     /**
