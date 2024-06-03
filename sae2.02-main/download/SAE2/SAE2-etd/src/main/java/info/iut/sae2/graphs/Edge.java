@@ -1,7 +1,10 @@
 package info.iut.sae2.graphs;
 
 import java.util.ArrayList;
-
+/**
+ *
+ * @author cbardot et ojfrancois
+ */
 public class Edge {
 
     /*

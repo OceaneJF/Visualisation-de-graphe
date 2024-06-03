@@ -8,6 +8,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
+/**
+ *
+ * @author cbardot et ojfrancois
+ */
 public class GraphLoader {
 
     public static Graph loadFromFile(String nodeFileName, String edgeFileName) {

@@ -14,6 +14,11 @@ import info.iut.sae2.graphs.Coord;
 import info.iut.sae2.graphs.Edge;
 import info.iut.sae2.graphs.Node;
 import info.iut.sae2.graphs.Graph;
+
+/**
+ *
+ * @author cbardot et ojfrancois
+ */
 public class GraphTest {
 
     private Node node1;
